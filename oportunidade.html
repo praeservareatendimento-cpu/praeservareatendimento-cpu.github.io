@@ -1082,7 +1082,7 @@ fieldset.field legend{padding:0;margin-bottom:8px}
     <div class="contact__intro reveal">
       <span class="label" data-cms="cons.ct.rotulo" data-cms-label="Rótulo da seção">Vamos conversar</span>
       <h2 class="section-title" id="contato-title" data-cms="cons.ct.titulo" data-cms-label="Título da seção">Quero conhecer a oportunidade</h2>
-      <p class="lead" data-cms="cons.ct.texto" data-cms-type="multiline" data-cms-label="Texto">Deixe seus dados e conte qual caminho te interessa. A conversa abre no WhatsApp com a sua mensagem pronta.</p>
+      <p class="lead" data-cms="cons.ct.texto" data-cms-type="multiline" data-cms-label="Texto">Deixe seus dados e a conversa abre no WhatsApp com a sua mensagem pronta.</p>
       <ol class="next-steps">
         <li data-cms="cons.ct.passo1" data-cms-label="O que acontece · 1">Você envia a mensagem pelo WhatsApp.</li>
         <li data-cms="cons.ct.passo2" data-cms-label="O que acontece · 2">A gente responde e marca uma conversa sem compromisso.</li>
@@ -1091,7 +1091,7 @@ fieldset.field legend{padding:0;margin-bottom:8px}
       <div class="badge-nf"><svg class="ic"><use href="#i-shield"/></svg> <span data-cms="cons.ct.selo" data-cms-label="Selo">Consultor independente Nipponflex</span></div>
     </div>
 
-    <form class="form reveal" id="contact-form" novalidate style="--d:100ms" data-msg="Vim pela página de oportunidade da Praeservare e tenho interesse em" data-cms-attr="data-msg" data-cms-key="cons.ct.msg" data-cms-label="Formulário · Começo da mensagem no WhatsApp">
+    <form class="form reveal" id="contact-form" novalidate style="--d:100ms" data-msg="Vim pela página de oportunidade da Praeservare e quero conhecer a oportunidade de ser consultor Nipponflex." data-cms-attr="data-msg" data-cms-key="cons.ct.msg" data-cms-label="Formulário · Mensagem no WhatsApp">
       <h3 data-cms="cons.ct.formTitulo" data-cms-label="Formulário · Título">Quero ser consultor</h3>
       <div class="field">
         <label for="f-nome" data-cms="cons.ct.labelNome" data-cms-label="Formulário · Rótulo do nome">Nome</label>
@@ -1107,16 +1107,6 @@ fieldset.field legend{padding:0;margin-bottom:8px}
         <label for="f-cidade" data-cms="cons.ct.labelCidade" data-cms-label="Formulário · Rótulo da cidade">Cidade</label>
         <input type="text" id="f-cidade" name="cidade" autocomplete="address-level2" placeholder="Ex.: Betim – MG" data-cms-attr="placeholder" data-cms-key="cons.ct.phCidade" data-cms-label="Formulário · Dica dentro do campo cidade">
       </div>
-      <fieldset class="field" aria-describedby="e-int">
-        <legend data-cms="cons.ct.labelInteresse" data-cms-label="Formulário · Pergunta">Qual caminho te interessa?</legend>
-        <div class="choices choices--4">
-          <label class="choice"><input type="radio" name="interesse" value="atuar como consultor" required><span><svg class="ic"><use href="#i-presentation"/></svg> <span data-cms="cons.ct.op1" data-cms-label="Formulário · Opção 1">Consultor</span></span></label>
-          <label class="choice"><input type="radio" name="interesse" value="revender os produtos"><span><svg class="ic"><use href="#i-bag"/></svg> <span data-cms="cons.ct.op2" data-cms-label="Formulário · Opção 2">Revendedor</span></span></label>
-          <label class="choice"><input type="radio" name="interesse" value="empreender e montar uma equipe"><span><svg class="ic"><use href="#i-rocket"/></svg> <span data-cms="cons.ct.op3" data-cms-label="Formulário · Opção 3">Empreendedor</span></span></label>
-          <label class="choice"><input type="radio" name="interesse" value="entender qual caminho combina comigo"><span><svg class="ic"><use href="#i-msg"/></svg> <span data-cms="cons.ct.op4" data-cms-label="Formulário · Opção 4">Ainda não sei</span></span></label>
-        </div>
-        <span class="field__error" id="e-int" aria-live="polite"></span>
-      </fieldset>
       <button class="btn btn--coral btn--block" type="submit"><svg class="ic ic--fill"><use href="#i-wa"/></svg> <span data-cms="cons.ct.botao" data-cms-label="Formulário · Botão de envio">Conversar pelo WhatsApp</span></button>
       <p class="form__note" data-cms="cons.ct.nota" data-cms-type="multiline" data-cms-label="Formulário · Observação">Seus dados não ficam guardados neste site: eles vão direto para a conversa no WhatsApp.</p>
       <p class="form__status" role="status" aria-live="polite"></p>
@@ -1572,16 +1562,16 @@ function ytId(v) {
     form.addEventListener('submit', e => {
       e.preventDefault();
       const n = nome.value.trim(), digits = whats.value.replace(/\D/g, '');
-      const interesse = form.querySelector('input[name="interesse"]:checked');
+      const radios = form.querySelectorAll('input[name="interesse"]'), interesse = form.querySelector('input[name="interesse"]:checked');
       let ok = true;
       if (n.length < 2) { setErr(nome, 'e-nome', 'Conta pra gente o seu nome.'); ok = false; } else setErr(nome, 'e-nome', '');
       if (digits.length < 10) { setErr(whats, 'e-whats', 'Informe um WhatsApp com DDD.'); ok = false; } else setErr(whats, 'e-whats', '');
-      if (!interesse) { setErr(null, 'e-int', 'Escolha uma opção.'); ok = false; } else setErr(null, 'e-int', '');
-      if (!ok) { (form.querySelector('[aria-invalid="true"]') || form.querySelector('input[name="interesse"]')).focus(); return; }
+      if (radios.length) { if (!interesse) { setErr(null, 'e-int', 'Escolha uma opção.'); ok = false; } else setErr(null, 'e-int', ''); }
+      if (!ok) { (form.querySelector('[aria-invalid="true"]') || radios[0]).focus(); return; }
 
       const c = cidade ? cidade.value.trim() : '';
-      const intro = (form.dataset.msg || 'Vim pelo site da Praeservare e tenho interesse em').trim();
-      const msg = `Olá! Meu nome é ${n}${c ? ` e sou de ${c}` : ''}. ${intro} ${interesse.value}. Meu WhatsApp: ${whats.value}.`;
+      const intro = (form.dataset.msg || 'Vim pelo site da Praeservare e tenho interesse em').trim().replace(/[\s.]+$/, '');
+      const msg = `Olá! Meu nome é ${n}${c ? ` e sou de ${c}` : ''}. ${intro}${interesse ? ' ' + interesse.value : ''}. Meu WhatsApp: ${whats.value}.`;
       window.open(waLink(msg), '_blank', 'noopener');
       status.textContent = 'Abrimos o WhatsApp com a sua mensagem. É só tocar em enviar!';
       form.reset();

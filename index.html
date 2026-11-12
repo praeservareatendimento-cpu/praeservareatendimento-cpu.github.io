@@ -1666,16 +1666,16 @@ function ytId(v) {
     form.addEventListener('submit', e => {
       e.preventDefault();
       const n = nome.value.trim(), digits = whats.value.replace(/\D/g, '');
-      const interesse = form.querySelector('input[name="interesse"]:checked');
+      const radios = form.querySelectorAll('input[name="interesse"]'), interesse = form.querySelector('input[name="interesse"]:checked');
       let ok = true;
       if (n.length < 2) { setErr(nome, 'e-nome', 'Conta pra gente o seu nome.'); ok = false; } else setErr(nome, 'e-nome', '');
       if (digits.length < 10) { setErr(whats, 'e-whats', 'Informe um WhatsApp com DDD.'); ok = false; } else setErr(whats, 'e-whats', '');
-      if (!interesse) { setErr(null, 'e-int', 'Escolha uma opção.'); ok = false; } else setErr(null, 'e-int', '');
-      if (!ok) { (form.querySelector('[aria-invalid="true"]') || form.querySelector('input[name="interesse"]')).focus(); return; }
+      if (radios.length) { if (!interesse) { setErr(null, 'e-int', 'Escolha uma opção.'); ok = false; } else setErr(null, 'e-int', ''); }
+      if (!ok) { (form.querySelector('[aria-invalid="true"]') || radios[0]).focus(); return; }
 
       const c = cidade ? cidade.value.trim() : '';
-      const intro = (form.dataset.msg || 'Vim pelo site da Praeservare e tenho interesse em').trim();
-      const msg = `Olá! Meu nome é ${n}${c ? ` e sou de ${c}` : ''}. ${intro} ${interesse.value}. Meu WhatsApp: ${whats.value}.`;
+      const intro = (form.dataset.msg || 'Vim pelo site da Praeservare e tenho interesse em').trim().replace(/[\s.]+$/, '');
+      const msg = `Olá! Meu nome é ${n}${c ? ` e sou de ${c}` : ''}. ${intro}${interesse ? ' ' + interesse.value : ''}. Meu WhatsApp: ${whats.value}.`;
       window.open(waLink(msg), '_blank', 'noopener');
       status.textContent = 'Abrimos o WhatsApp com a sua mensagem. É só tocar em enviar!';
       form.reset();
