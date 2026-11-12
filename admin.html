@@ -1,0 +1,2192 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel do site</title>
+<meta name="theme-color" content="#061626">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#061626; --bg-2:#081D31; --surface:#0D263D; --surface-2:#11304C; --input:#071A2C;
+  --line:rgba(120,200,255,.14); --line-2:rgba(120,200,255,.24);
+  --cyan:#3CCFF2; --cyan-2:#7BE3FA; --cyan-soft:rgba(60,207,242,.12);
+  --coral:#FF6B5E; --coral-2:#FF8A72; --coral-soft:rgba(255,107,94,.13);
+  --ok:#3DDC97; --warn:#FFB547;
+  --text:#EAF3FA; --text-2:#A9BDCD; --text-3:#7F95A8; --on-accent:#061626;
+  --font-display:"Montserrat",ui-sans-serif,system-ui,sans-serif;
+  --font-body:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --panel-w:440px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14.5px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;display:grid;grid-template-rows:auto 1fr;height:100dvh;overflow:hidden}
+button,input,textarea{font:inherit;color:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ---------- Botões ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:.5em 1em;border-radius:10px;
+  border:1.5px solid transparent;background:none;font-family:var(--font-display);font-weight:700;font-size:13.5px;cursor:pointer;white-space:nowrap;
+  text-decoration:none;transition:background-color .2s,border-color .2s,color .2s,transform .15s,box-shadow .2s}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn--coral{background:linear-gradient(135deg,var(--coral-2),#FF5E52);color:var(--on-accent);box-shadow:0 6px 18px -8px rgba(255,94,82,.8)}
+.btn--coral:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 24px -8px rgba(255,94,82,.9)}
+.btn--outline{border-color:rgba(60,207,242,.5);color:var(--cyan)}
+.btn--outline:hover:not(:disabled){background:var(--cyan-soft);border-color:var(--cyan)}
+.btn--ghost{color:var(--text-2);border-color:var(--line)}
+.btn--ghost:hover:not(:disabled){color:var(--text);border-color:var(--line-2);background:rgba(255,255,255,.03)}
+.btn--sm{min-height:34px;padding:.35em .8em;font-size:12.5px;border-radius:9px}
+.btn--link{min-height:auto;padding:2px 4px;border:0;color:var(--text-3);font-family:var(--font-body);font-weight:500;font-size:12.5px}
+.btn--link:hover{color:var(--text)}
+
+/* ---------- Barra superior ---------- */
+.bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--line);background:rgba(6,22,38,.96);z-index:5}
+.bar__brand{display:flex;align-items:center;gap:10px;min-width:0}
+.bar__logo{width:38px;height:38px;border-radius:50%;flex:none;background:var(--surface) center/contain no-repeat;box-shadow:0 0 0 1px var(--line)}
+.bar__title{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.bar__title strong{font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:.02em}
+.bar__title span{color:var(--text-3);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);
+  color:var(--text-2);font-size:12.5px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--text-3);flex:none}
+.dot--warn{background:var(--warn);box-shadow:0 0 8px var(--warn)}
+.dot--ok{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.bar__actions{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tabs{display:none}
+
+/* ---------- Layout ---------- */
+.layout{display:grid;grid-template-columns:var(--panel-w) 1fr;min-height:0}
+.panel{display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--line);background:var(--bg)}
+.panel__top{padding:14px 16px 10px;border-bottom:1px solid var(--line);display:grid;gap:10px}
+.search{position:relative}
+.search .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-3)}
+.search input{width:100%;height:40px;padding:0 12px 0 38px;border-radius:10px;border:1.5px solid var(--line);background:var(--input);outline:none}
+.search input:focus{border-color:var(--cyan)}
+.panel__tools{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.panel__scroll{flex:1;overflow:auto;padding:12px 12px 80px;scroll-behavior:smooth}
+
+.notice{display:flex;gap:10px;align-items:flex-start;margin:0 4px 12px;padding:12px 14px;border-radius:12px;border:1px solid var(--line-2);background:var(--surface);font-size:13px;color:var(--text-2)}
+.notice strong{color:var(--text)}
+.notice--warn{border-color:rgba(255,181,71,.45);background:rgba(255,181,71,.08)}
+.notice--err{border-color:rgba(255,107,94,.55);background:rgba(255,107,94,.1)}
+.notice__body{flex:1}
+.notice__actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.notice__close{border:0;background:none;color:var(--text-3);cursor:pointer;padding:2px;font-size:18px;line-height:1}
+
+/* ---------- Grupos e campos ---------- */
+.grp{margin:0 0 10px;border:1px solid var(--line);border-radius:14px;background:var(--bg-2);overflow:hidden}
+.grp > summary{list-style:none;display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;user-select:none}
+.grp > summary::-webkit-details-marker{display:none}
+.grp > summary:hover{background:rgba(255,255,255,.02)}
+.grp__name{font-family:var(--font-display);font-weight:700;font-size:14px;flex:1}
+.grp__count{color:var(--text-3);font-size:12px}
+.grp__mod{font-size:11px;font-weight:600;color:var(--warn);background:rgba(255,181,71,.12);padding:2px 8px;border-radius:999px}
+.grp__chev{color:var(--text-3);transition:transform .25s}
+.grp[open] .grp__chev{transform:rotate(180deg)}
+.grp__body{padding:4px 14px 14px;display:grid;gap:16px}
+
+.field{position:relative;display:grid;gap:7px;padding:10px;margin:0 -10px;border-radius:10px;transition:background-color .4s}
+.field.is-flash{background:rgba(60,207,242,.1)}
+.field__head{display:flex;align-items:center;gap:8px}
+.field__head label{font-weight:600;font-size:13px;color:var(--text);flex:1}
+.field__mod{display:none;width:7px;height:7px;border-radius:50%;background:var(--warn)}
+.field__reset{display:none;border:0;background:none;color:var(--text-3);font-size:12px;cursor:pointer;padding:2px 4px;border-radius:6px}
+.field__reset:hover{color:var(--text)}
+.field.is-mod .field__mod,.field.is-mod .field__reset{display:inline-block}
+.inp{width:100%;min-height:40px;padding:9px 12px;border-radius:10px;border:1.5px solid var(--line-2);background:var(--input);outline:none;
+  resize:vertical;transition:border-color .2s,box-shadow .2s;line-height:1.45}
+textarea.inp{min-height:64px}
+.inp:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(60,207,242,.15)}
+.inp::placeholder{color:var(--text-3)}
+.hint{margin:0;color:var(--text-3);font-size:12px}
+.hint code{font-family:ui-monospace,monospace;color:var(--text-2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line-2);background:transparent;color:var(--text-2);border-radius:999px;padding:3px 10px;font-size:12px;cursor:pointer}
+.chip:hover{color:var(--text);border-color:var(--cyan)}
+
+/* Páginas */
+.pages{display:flex;gap:4px;padding:3px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.pages button{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:0 8px;border:0;border-radius:9px;background:none;
+  color:var(--text-2);font-weight:600;font-size:13px;cursor:pointer;transition:background-color .2s,color .2s}
+.pages button:hover:not(:disabled){color:var(--text)}
+.pages button[aria-pressed="true"]{background:var(--surface-2);color:var(--text);box-shadow:0 0 0 1px var(--line-2)}
+.pages button:disabled{opacity:.45;cursor:not-allowed}
+.pages .dot{width:7px;height:7px}
+.field__shared{font-size:10.5px;font-weight:600;color:var(--cyan);background:var(--cyan-soft);padding:1px 8px;border-radius:999px;white-space:nowrap}
+.panel__tools .btn--link{white-space:nowrap}
+.panel__links{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:2px 6px}
+
+/* Itens de lista (produtos) */
+.item{border:1px solid var(--line-2);border-radius:12px;background:rgba(255,255,255,.015)}
+.item__head{display:flex;align-items:center;gap:6px;padding:9px 10px 9px 12px;border-bottom:1px solid var(--line)}
+.item__title{flex:1;min-width:0;font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item__name{color:var(--text-3);font-weight:500;margin-left:8px}
+.item__btn{flex:none;width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:none;color:var(--text-2);cursor:pointer;display:grid;place-items:center}
+.item__btn .ic{width:16px;height:16px}
+.item__btn:hover:not(:disabled){color:var(--text);border-color:var(--line-2)}
+.item__btn--del:hover:not(:disabled){color:#FF9488;border-color:rgba(255,107,94,.55)}
+.item__btn:disabled{opacity:.3;cursor:default}
+.item__body{padding:2px 12px 10px;display:grid;gap:6px}
+.add-item{justify-self:start}
+
+/* Campo de imagem */
+.imgf{display:grid;grid-template-columns:112px 1fr;gap:12px;align-items:start}
+.imgf__thumb{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;border:1.5px dashed var(--line-2);display:grid;place-items:center;
+  background:repeating-conic-gradient(#0B2236 0 25%, #0E2A42 0 50%) 0 0/16px 16px}
+.imgf__thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.imgf--contain .imgf__thumb img{object-fit:contain;padding:6px}
+.imgf__empty{color:var(--text-3);font-size:11.5px;text-align:center;padding:6px}
+.imgf__drop{position:absolute;inset:0;display:none;place-items:center;background:rgba(60,207,242,.22);color:var(--text);font-weight:600;font-size:12px;text-align:center}
+.imgf.is-drag .imgf__drop{display:grid}
+.imgf.is-drag .imgf__thumb{border-color:var(--cyan)}
+.imgf__body{display:grid;gap:8px;min-width:0}
+.imgf__actions{display:flex;flex-wrap:wrap;gap:6px}
+.imgf__info{margin:0;font-size:12px;color:var(--text-3);min-height:1.2em}
+.imgf__info.is-err{color:#FF9488}
+.imgf__info.is-ok{color:var(--ok)}
+.sub-label{font-size:12px;font-weight:600;color:var(--text-2)}
+.file-btn{position:relative;overflow:hidden}
+.file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+/* ---------- Prévia ---------- */
+.preview{display:grid;grid-template-rows:auto 1fr;min-width:0;min-height:0;
+  background:radial-gradient(circle at 1px 1px, rgba(120,200,255,.09) 1px, transparent 0) 0 0/18px 18px, #040F1B}
+.preview__bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 14px;border-bottom:1px solid var(--line);background:rgba(6,22,38,.8)}
+.seg{display:inline-flex;padding:3px;border-radius:10px;background:var(--surface);border:1px solid var(--line)}
+.seg button{display:inline-flex;align-items:center;gap:6px;border:0;background:none;color:var(--text-2);padding:5px 10px;border-radius:7px;cursor:pointer;font-size:12.5px;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--surface-2);color:var(--text);box-shadow:0 0 0 1px var(--line-2)}
+.toggle{display:inline-flex;align-items:center;gap:8px;color:var(--text-2);font-size:12.5px;cursor:pointer;user-select:none}
+.toggle input{appearance:none;width:34px;height:20px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line-2);position:relative;cursor:pointer;margin:0;transition:background-color .2s}
+.toggle input::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--text-2);transition:transform .2s,background-color .2s}
+.toggle input:checked{background:rgba(60,207,242,.35);border-color:var(--cyan)}
+.toggle input:checked::after{transform:translateX(14px);background:var(--cyan-2)}
+.preview__bar .spacer{flex:1}
+.stage{position:relative;overflow:hidden;min-height:0}
+.device{position:absolute;top:0;left:0;overflow:hidden;background:var(--bg)}
+.device--mobile{border-radius:22px;box-shadow:0 0 0 1px var(--line-2),0 30px 60px -20px rgba(0,0,0,.8)}
+.device iframe{position:absolute;top:0;left:0;border:0;transform-origin:0 0;background:var(--bg)}
+
+/* ---------- Tela inicial ---------- */
+.start{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:20px;
+  background:radial-gradient(60% 60% at 20% 20%, rgba(60,207,242,.12), transparent 60%),radial-gradient(60% 60% at 80% 80%, rgba(255,107,94,.12), transparent 60%),var(--bg)}
+.start__card{width:min(560px,100%);padding:32px;border-radius:20px;background:var(--bg-2);border:1px solid var(--line-2);box-shadow:0 40px 80px -40px rgba(0,0,0,.9)}
+.start h1{font-family:var(--font-display);font-weight:800;font-size:24px;letter-spacing:-.02em;margin:0 0 8px}
+.start p{color:var(--text-2);margin:0 0 20px}
+.drop{display:grid;place-items:center;gap:8px;padding:34px 20px;border-radius:14px;border:2px dashed var(--line-2);text-align:center;cursor:pointer;color:var(--text-2);transition:border-color .2s,background-color .2s}
+.drop strong{color:var(--cyan)}
+.drop:hover,.drop.is-drag{border-color:var(--cyan);background:var(--cyan-soft)}
+.drop .ic{width:30px;height:30px;color:var(--cyan)}
+.start__err{color:#FF9488;margin-top:14px!important;font-size:13px}
+.start small{display:block;margin-top:16px;color:var(--text-3);font-size:12.5px}
+
+/* ---------- Tela de senha ---------- */
+.locked .bar,.locked .layout{visibility:hidden}
+.gate{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:20px;
+  background:radial-gradient(60% 60% at 15% 15%, rgba(60,207,242,.14), transparent 60%),radial-gradient(60% 60% at 85% 85%, rgba(255,107,94,.14), transparent 60%),var(--bg)}
+.gate__card{width:min(400px,100%);padding:34px 30px 26px;border-radius:22px;background:var(--bg-2);border:1px solid var(--line-2);
+  box-shadow:0 40px 80px -40px rgba(0,0,0,.9);display:grid;gap:14px;text-align:center}
+.gate__icon{width:64px;height:64px;margin:0 auto 4px;border-radius:50%;display:grid;place-items:center;color:var(--cyan);
+  background:var(--cyan-soft);box-shadow:inset 0 0 0 1px rgba(60,207,242,.3),0 0 30px -8px rgba(60,207,242,.7)}
+.gate__icon .ic{width:28px;height:28px}
+.gate h1{font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:-.02em;margin:0}
+.gate p{margin:0;color:var(--text-2)}
+.gate .dlg__err{margin:0!important;text-align:left}
+.gate .btn--block{width:100%;min-height:46px;font-size:14.5px}
+.gate.is-shake .gate__card{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.pass{position:relative}
+.pass .inp{padding-right:46px;height:48px;font-size:16px;text-align:left}
+.pass__toggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;border-radius:8px;background:none;color:var(--text-3);cursor:pointer;display:grid;place-items:center}
+.pass__toggle:hover{color:var(--text)}
+.hash-out{font-family:ui-monospace,monospace;font-size:12px}
+
+/* ---------- Botão salvar ---------- */
+.btn-save{min-width:0}
+@media (min-width:900px){.btn-save{min-height:40px;padding:.5em 1.15em;font-size:13.5px}}
+.btn-save.is-saved:disabled{opacity:1;background:rgba(61,220,151,.12);color:var(--ok);border-color:rgba(61,220,151,.45);box-shadow:none}
+.btn-save:not(:disabled){animation:savePulse 2.4s ease-in-out 1}
+@keyframes savePulse{0%,100%{box-shadow:0 6px 18px -8px rgba(255,94,82,.8)}50%{box-shadow:0 0 0 5px rgba(255,107,94,.22),0 6px 18px -8px rgba(255,94,82,.8)}}
+.folder-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0 4px;color:var(--text-2);font-size:13px}
+.folder-line strong{color:var(--text)}
+.gh-form .sub-label{display:block;margin:14px 0 6px}
+.gh-form ol{margin:0 0 6px;padding-left:20px;color:var(--text-2)}
+.gh-form li{margin:5px 0}
+.gh-form a,.help a{color:var(--cyan)}
+.gh-form code{font-size:12px}
+
+/* ---------- Diálogos e avisos ---------- */
+dialog{border:1px solid var(--line-2);border-radius:18px;background:var(--bg-2);color:var(--text);padding:26px;width:min(440px,calc(100% - 32px));
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.9)}
+dialog::backdrop{background:rgba(2,8,15,.72);backdrop-filter:blur(3px)}
+dialog h2{font-family:var(--font-display);font-weight:800;font-size:19px;margin:0 0 6px}
+dialog p{color:var(--text-2);margin:0 0 16px}
+.dlg__err{color:#FF9488!important;font-size:13px;min-height:1.2em;margin:8px 0 0!important}
+.dlg__actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;margin-top:18px}
+.help{width:min(620px,calc(100% - 32px))}
+.help ol,.help ul{margin:0 0 14px;padding-left:20px;color:var(--text-2)}
+.help li{margin:4px 0}
+.help h3{font-family:var(--font-display);font-size:14px;margin:18px 0 6px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);z-index:40;max-width:min(560px,calc(100% - 32px));
+  padding:12px 16px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line-2);box-shadow:0 20px 40px -16px rgba(0,0,0,.8);
+  opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;font-size:13.5px}
+.toast.is-on{opacity:1;transform:translateX(-50%)}
+.toast--ok{border-color:rgba(61,220,151,.5)}
+.toast--err{border-color:rgba(255,107,94,.6)}
+.busy{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(2,8,15,.55)}
+.busy__box{display:flex;align-items:center;gap:12px;padding:16px 20px;border-radius:14px;background:var(--bg-2);border:1px solid var(--line-2)}
+.spin{width:20px;height:20px;border-radius:50%;border:2.5px solid var(--line-2);border-top-color:var(--cyan);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- Celular ---------- */
+@media (max-width:899.98px){
+  .layout{grid-template-columns:1fr}
+  .panel{border-right:0}
+  body[data-view="edit"] .preview{display:none}
+  body[data-view="preview"] .panel{display:none}
+  .tabs{display:flex;width:100%;gap:6px}
+  .tabs button{flex:1}
+  .bar__actions .btn span.lbl-long{display:none}
+  .status{order:5;width:100%;justify-content:center}
+}
+@media (min-width:900px){ .bar__actions .btn span.lbl-short{display:none} }
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body data-view="edit" class="locked">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7M7 3v4a1 1 0 0 0 1 1h7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+</svg>
+
+<!-- Barra superior -->
+<header class="bar">
+  <div class="bar__brand">
+    <span class="bar__logo" id="bar-logo" aria-hidden="true"></span>
+    <div class="bar__title"><strong>Painel do site</strong><span id="bar-sub">Edite textos e imagens</span></div>
+  </div>
+  <div class="status" id="status" role="status" aria-live="polite"></div>
+  <div class="bar__actions">
+    <button class="btn btn--ghost btn--sm" type="button" id="btn-help" title="Como funciona"><svg class="ic"><use href="#i-help"/></svg><span class="lbl-long">Ajuda</span></button>
+    <label class="btn btn--ghost btn--sm file-btn" title="Abrir os arquivos do site (index.html, produtos.html e oportunidade.html)"><svg class="ic"><use href="#i-folder"/></svg><span class="lbl-long">Abrir arquivo</span><input type="file" id="file-site" accept=".html,.htm,text/html" multiple></label>
+    <button class="btn btn--outline btn--sm" type="button" id="btn-download"><svg class="ic"><use href="#i-download"/></svg><span class="lbl-long">Baixar arquivos</span><span class="lbl-short">Baixar</span></button>
+    <button class="btn btn--coral btn--sm btn-save" type="button" id="btn-save" disabled><svg class="ic"><use href="#i-save"/></svg><span class="lbl-long">Salvar alterações</span><span class="lbl-short">Salvar</span></button>
+    <button class="btn btn--ghost btn--sm" type="button" id="btn-logout" title="Sair do painel"><svg class="ic"><use href="#i-logout"/></svg><span class="lbl-long">Sair</span></button>
+  </div>
+  <div class="tabs" role="group" aria-label="Alternar visualização">
+    <button class="btn btn--ghost btn--sm" type="button" data-view="edit" aria-pressed="true"><svg class="ic"><use href="#i-edit"/></svg>Editar</button>
+    <button class="btn btn--ghost btn--sm" type="button" data-view="preview" aria-pressed="false"><svg class="ic"><use href="#i-eye"/></svg>Ver prévia</button>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="panel" aria-label="Campos editáveis">
+    <div class="panel__top">
+      <div class="pages" id="pages" role="group" aria-label="Página em edição"></div>
+      <div class="search"><svg class="ic"><use href="#i-search"/></svg><input type="search" id="search" placeholder="Buscar campo ou texto…" aria-label="Buscar campo"></div>
+      <div class="panel__tools">
+        <span class="hint" id="field-count"></span>
+        <span class="panel__links">
+          <label class="btn btn--link file-btn" title="Copia textos e imagens de um arquivo antigo do site para as páginas atuais">Importar conteúdo<input type="file" id="file-import" accept=".html,.htm,text/html" multiple></label>
+          <button class="btn btn--link" type="button" id="btn-collapse">Recolher tudo</button>
+          <button class="btn btn--link" type="button" id="btn-discard">Descartar alterações</button>
+        </span>
+      </div>
+    </div>
+    <div class="panel__scroll" id="panel-scroll">
+      <div id="notices"></div>
+      <div id="groups"></div>
+    </div>
+  </aside>
+
+  <section class="preview" aria-label="Prévia do site">
+    <div class="preview__bar">
+      <div class="seg" role="group" aria-label="Tamanho da prévia">
+        <button type="button" data-device="desktop" aria-pressed="true"><svg class="ic"><use href="#i-monitor"/></svg>Computador</button>
+        <button type="button" data-device="mobile" aria-pressed="false"><svg class="ic"><use href="#i-phone"/></svg>Celular</button>
+      </div>
+      <label class="toggle" title="Com isso ligado, clicar em um texto ou foto na prévia abre o campo correspondente"><input type="checkbox" id="pick" checked> Clicar no site abre o campo</label>
+      <span class="spacer"></span>
+      <a class="btn btn--link" id="btn-view-site" href="index.html" target="_blank" rel="noopener" hidden>Ver site publicado ↗</a>
+    </div>
+    <div class="stage" id="stage">
+      <div class="device" id="device"><iframe id="frame" title="Prévia do site" sandbox="allow-scripts allow-same-origin"></iframe></div>
+    </div>
+  </section>
+</main>
+
+<!-- Tela de senha -->
+<div class="gate" id="gate" hidden>
+  <form class="gate__card" id="gate-form" autocomplete="on">
+    <span class="gate__icon" aria-hidden="true"><svg class="ic"><use href="#i-lock"/></svg></span>
+    <h1>Área do administrador</h1>
+    <p>Digite a senha para abrir o painel do site.</p>
+    <div class="pass">
+      <input class="inp" type="password" id="gate-pass" name="password" autocomplete="current-password" aria-label="Senha" placeholder="Senha" required>
+      <button class="pass__toggle" type="button" id="gate-eye" aria-label="Mostrar senha" aria-pressed="false"><svg class="ic"><use href="#i-eye"/></svg></button>
+    </div>
+    <p class="dlg__err" id="gate-err" role="alert"></p>
+    <button class="btn btn--coral btn--block" type="submit" id="gate-btn">Entrar</button>
+    <a class="btn btn--link" href="index.html">← Voltar ao site</a>
+  </form>
+</div>
+
+<!-- Tela inicial (quando o index.html não abre sozinho) -->
+<div class="start" id="start" hidden>
+  <div class="start__card">
+    <h1>Painel do site</h1>
+    <p>Abra os arquivos do site (<strong>index.html</strong>, <strong>produtos.html</strong> e <strong>oportunidade.html</strong>) para começar a editar os textos e as imagens.</p>
+    <label class="drop" id="drop">
+      <svg class="ic"><use href="#i-file"/></svg>
+      <span>Arraste os arquivos <strong>.html</strong> do site para cá<br>ou <strong>clique para escolher</strong> (pode selecionar todos)</span>
+      <input type="file" id="file-start" accept=".html,.htm,text/html" multiple hidden>
+    </label>
+    <p class="start__err" id="start-err" hidden></p>
+    <small>Dica: deixe o admin.html na mesma pasta das páginas do site para ele abrir tudo sozinho.</small>
+  </div>
+</div>
+
+<!-- Login (publicação direta) -->
+<dialog id="login">
+  <form id="login-form">
+    <h2>Entrar para publicar</h2>
+    <p>Digite a senha definida no arquivo <strong>save.php</strong>.</p>
+    <input class="inp" type="password" id="login-pass" autocomplete="current-password" required aria-label="Senha">
+    <p class="dlg__err" id="login-err" role="alert"></p>
+    <div class="dlg__actions">
+      <button class="btn btn--ghost" type="button" id="login-cancel">Cancelar</button>
+      <button class="btn btn--coral" type="submit">Entrar</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Escolher a pasta do site -->
+<dialog id="folder-dlg">
+  <h2>Salvar na pasta do site</h2>
+  <p>Para salvar direto no seu computador, escolha a <strong>pasta do site</strong>: a mesma onde estão o <strong>index.html</strong> e o <strong>admin.html</strong>. O navegador vai pedir permissão para editar os arquivos dessa pasta.</p>
+  <p class="hint">Isso é pedido no primeiro salvamento sempre que o painel é aberto. Antes de salvar, o painel guarda uma cópia da versão anterior de cada página na pasta <strong>backups</strong>.</p>
+  <div class="dlg__actions">
+    <button class="btn btn--ghost" type="button" data-choice="cancel">Cancelar</button>
+    <button class="btn btn--outline" type="button" data-choice="download">Prefiro baixar os arquivos</button>
+    <button class="btn btn--coral" type="button" data-choice="pick"><svg class="ic"><use href="#i-folder"/></svg>Escolher a pasta</button>
+  </div>
+</dialog>
+
+<!-- Conectar ao GitHub (site publicado no GitHub Pages) -->
+<dialog id="gh-dlg" class="help">
+  <form id="gh-form" class="gh-form" autocomplete="off">
+    <h2>Conectar ao GitHub</h2>
+    <p>Para o botão <strong>Salvar alterações</strong> publicar direto no site, o painel precisa de uma <strong>chave de acesso</strong> da conta do GitHub onde o site está. Ela fica guardada só neste navegador. Faça isso uma vez em cada computador.</p>
+    <ol>
+      <li>Com a conta do site aberta no GitHub, clique em <a id="gh-new" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener"><strong>criar a chave de acesso ↗</strong></a>. O nome, a validade e a permissão já vêm preenchidos.</li>
+      <li>Em <strong>Repository access</strong>, marque <strong>Only select repositories</strong> e escolha <strong id="gh-repo-name">o repositório do site</strong>.</li>
+      <li>Confira se <strong>Contents</strong> está como <em>Read and write</em>, clique em <strong>Generate token</strong> e copie a chave (começa com <code>github_pat_</code>).</li>
+      <li>Cole a chave abaixo e clique em <strong>Conectar</strong>.</li>
+    </ol>
+    <label class="sub-label" for="gh-repo">Repositório do site</label>
+    <input class="inp" id="gh-repo" placeholder="usuario/repositorio" spellcheck="false">
+    <label class="sub-label" for="gh-token">Chave de acesso</label>
+    <input class="inp" type="password" id="gh-token" placeholder="github_pat_…" spellcheck="false">
+    <p class="dlg__err" id="gh-err" role="alert"></p>
+    <div class="dlg__actions">
+      <button class="btn btn--ghost" type="button" id="gh-cancel">Cancelar</button>
+      <button class="btn btn--outline" type="button" id="gh-download">Prefiro baixar os arquivos</button>
+      <button class="btn btn--coral" type="submit" id="gh-ok">Conectar</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Ajuda -->
+<dialog id="help" class="help">
+  <h2>Como usar o painel</h2>
+  <h3>Editar</h3>
+  <ul>
+    <li>Escolha a página no topo do painel (<strong>Página inicial</strong>, <strong>Produtos</strong> ou <strong>Seja consultor</strong>). Os campos estão separados pelas seções. Use a busca para achar um texto rápido.</li>
+    <li>Campos marcados com <strong>“Em 3 páginas”</strong> (WhatsApp, logo, menu, rodapé, certificações…) aparecem em todas as páginas: a mudança vale para todas.</li>
+    <li>Com “Clicar no site abre o campo” desligado, os links e as abas da prévia funcionam como no site (dá para ir de uma página para outra).</li>
+    <li>Na página <strong>Produtos</strong>, cada categoria tem os botões para <strong>adicionar</strong>, <strong>remover</strong> (lixeira) e <strong>mudar a ordem</strong> (setas) dos produtos.</li>
+    <li><strong>Importar conteúdo</strong> copia textos e imagens de um arquivo antigo do site para a versão atual.</li>
+    <li>Clique em qualquer texto ou foto na prévia para ir direto ao campo.</li>
+    <li>Nos textos com dica de negrito, escreva <code>**assim**</code> para destacar.</li>
+    <li>Suas alterações ficam guardadas como rascunho neste navegador até você publicar ou baixar.</li>
+  </ul>
+  <h3>Imagens</h3>
+  <ul>
+    <li><strong>Do computador:</strong> clique em “Enviar do computador” ou arraste a foto para o quadrado. O painel reduz e otimiza a imagem automaticamente.</li>
+    <li><strong>Da internet:</strong> cole o endereço direto da imagem. No navegador, clique com o botão direito na foto e escolha “Copiar endereço da imagem”.</li>
+    <li>Fotos por link dependem do site de origem. Se ele apagar a imagem, ela some do seu site também.</li>
+  </ul>
+  <h3>Salvar</h3>
+  <ul id="help-save"></ul>
+  <h3>Senha do painel</h3>
+  <div id="help-pass"></div>
+  <div class="dlg__actions"><button class="btn btn--coral" type="button" id="help-close">Entendi</button></div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="busy" id="busy" hidden><div class="busy__box"><span class="spin"></span><span id="busy-text">Aguarde…</span></div></div>
+
+<script>
+'use strict';
+/* =========================================================
+   Painel do site — edita as páginas marcadas com data-cms
+   ========================================================= */
+
+/* SENHA DO PAINEL
+   • Hospedagem COM PHP: a senha que vale é a do arquivo save.php (const SENHA).
+   • Hospedagem SEM PHP ou painel aberto do computador: vale o código abaixo
+     (é a senha "embaralhada" em SHA-256; a atual é 123456).
+     Para trocar: entre no painel → Ajuda → "Gerar código de nova senha"
+     e cole o código gerado aqui no lugar do atual. */
+const SENHA_HASH = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92';
+
+/* PÁGINAS QUE O PAINEL EDITA (precisam estar na mesma pasta do admin.html) */
+const PAGES = [
+  { file: 'index.html', name: 'Página inicial' },
+  { file: 'produtos.html', name: 'Produtos' },
+  { file: 'oportunidade.html', name: 'Seja consultor' }
+];
+
+/* GITHUB PAGES
+   No endereço usuario.github.io/repositorio o painel descobre o repositório sozinho.
+   Com domínio próprio (ex.: www.praeservare.com.br), escreva aqui: 'usuario/repositorio' */
+const GITHUB_REPO = '';
+
+const $  = (s, c = document) => c.querySelector(s);
+const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
+const vk = (v) => typeof v === 'string' ? v : JSON.stringify(v);
+const fold = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const decode = (() => { const t = document.createElement('textarea'); return (s) => { t.innerHTML = s; return t.value; }; })();
+const kb = (n) => n >= 1024 * 1024 ? (n / 1024 / 1024).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB';
+const dataUriBytes = (u) => Math.round((u.length - u.indexOf(',') - 1) * 3 / 4);
+const hhmm = (d) => new Date(d).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+const fmtDate = (d) => new Date(d).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+const listNames = (arr) => arr.length < 2 ? arr.join('') : arr.slice(0, -1).join(', ') + ' e ' + arr[arr.length - 1];
+const wait = (ms) => new Promise(r => setTimeout(r, ms));
+
+/* ---------- SHA-256 (usa o do navegador; sem ele, esta versão em JS) ---------- */
+const SHA = (() => {
+  const K = [], H = [];
+  const prime = (x) => { for (let f = 2; f * f <= x; f++) if (x % f === 0) return false; return true; };
+  for (let n = 2, c = 0; c < 64; n++) {
+    if (!prime(n)) continue;
+    if (c < 8) H[c] = (Math.pow(n, 1 / 2) * 4294967296) | 0;
+    K[c++] = (Math.pow(n, 1 / 3) * 4294967296) | 0;
+  }
+  const rr = (v, a) => (v >>> a) | (v << (32 - a));
+  return (text) => {
+    let str = unescape(encodeURIComponent(text));
+    const bitLen = str.length * 8, words = [];
+    let hash = H.slice(0);
+    str += '\x80';
+    while (str.length % 64 - 56) str += '\x00';
+    for (let i = 0; i < str.length; i++) words[i >> 2] |= str.charCodeAt(i) << ((3 - i) % 4) * 8;
+    words[words.length] = (bitLen / 4294967296) | 0;
+    words[words.length] = bitLen;
+    for (let j = 0; j < words.length;) {
+      const w = words.slice(j, j += 16), old = hash;
+      hash = hash.slice(0, 8);
+      for (let i = 0; i < 64; i++) {
+        const w15 = w[i - 15], w2 = w[i - 2], a = hash[0], e = hash[4];
+        const t1 = hash[7] + (rr(e, 6) ^ rr(e, 11) ^ rr(e, 25)) + ((e & hash[5]) ^ (~e & hash[6])) + K[i]
+          + (w[i] = i < 16 ? w[i] : (w[i - 16] + (rr(w15, 7) ^ rr(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rr(w2, 17) ^ rr(w2, 19) ^ (w2 >>> 10))) | 0);
+        const t2 = (rr(a, 2) ^ rr(a, 13) ^ rr(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+        hash = [(t1 + t2) | 0].concat(hash);
+        hash[4] = (hash[4] + t1) | 0;
+      }
+      for (let i = 0; i < 8; i++) hash[i] = (hash[i] + old[i]) | 0;
+    }
+    let out = '';
+    for (let i = 0; i < 8; i++) for (let j = 3; j + 1; j--) { const b = (hash[i] >> (j * 8)) & 255; out += (b < 16 ? '0' : '') + b.toString(16); }
+    return out;
+  };
+})();
+async function sha256Hex(text) {
+  if (window.crypto && crypto.subtle) {
+    try {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+      return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch (e) {}
+  }
+  return SHA(text);
+}
+
+const GROUP_ORDER = ['Marca', 'Contatos e links', 'Menu', 'Topo (hero)', 'Cards de chamada', 'Diferenciais', 'Soluções',
+  'Faixa de confiança', 'Podcast', 'Episódios', 'Sono e descanso', 'Água e purificação', 'Conforto e bem-estar',
+  'Saúde e vitalidade', 'Agro', 'Tecnologias', 'Chamada final', 'Caminhos', 'Como funciona', 'Oportunidade', 'Por que empreender', 'Nosso apoio',
+  'Para quem é', 'Transparência', 'Depoimentos', 'Dúvidas', 'Contato', 'Certificações', 'Rodapé', 'Botão flutuante do WhatsApp', 'SEO e compartilhamento'];
+
+const CONFIG_SCHEMA = [
+  { k: 'whatsapp', label: 'Número do WhatsApp', type: 'tel', hint: 'Com 55 + DDD + número, só números. Ex.: 5531987654321' },
+  { k: 'whatsappMsg', label: 'Mensagem padrão do WhatsApp', type: 'multiline', hint: 'Usada no botão flutuante e no “Fale conosco”.' },
+  { k: 'instagram', label: 'Instagram principal', hint: 'Pode ser @perfil ou o link do perfil.' },
+  { k: 'youtube', label: 'Link do canal no YouTube', type: 'url' },
+  { k: 'youtubeVideoId', label: 'Vídeo em destaque no player', hint: 'Cole o link do vídeo no YouTube.' },
+  { k: 'youtubeChannelId', label: 'ID do canal (opcional)', hint: 'Começa com UC… Com ele, o player mostra sempre os vídeos mais recentes.' },
+  { k: 'historiaUrl', label: 'Link do botão “Conheça nossa história”', type: 'url', hint: 'Vazio = abre o Instagram.' }
+];
+
+const POS_PRESETS = [['Centro', '50% 50%'], ['Mais acima', '50% 25%'], ['Mais abaixo', '50% 75%'], ['Esquerda', '25% 50%'], ['Direita', '75% 50%']];
+
+const S = {
+  pages: PAGES.map(p => ({ ...p, doc: null, orig: null, force: false, fromMemory: 0 })),
+  page: PAGES[0].file,
+  fields: [], byKey: new Map(), baseline: new Map(), ui: new Map(),
+  device: 'desktop', pick: true, draftOk: true, saved: null,
+  server: { available: false, logged: false, leak: false, defaultPass: false },
+  dir: null, dirName: '', dirHasAdmin: false,
+  gh: { repo: '', branch: 'main', token: '', head: '' },
+  localImg: new Map()
+};
+const FS_OK = typeof window.showDirectoryPicker === 'function';
+const pageOf = (file) => S.pages.find(p => p.file === file);
+const cur = () => pageOf(S.page);
+const loaded = () => S.pages.filter(p => p.doc);
+const hasSite = () => loaded().length > 0;
+
+/* ---------- Rascunho (IndexedDB) ---------- */
+const DB = (() => {
+  let p;
+  const open = () => p || (p = new Promise((res, rej) => {
+    const r = indexedDB.open('painel-site', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('kv');
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  }));
+  const run = async (mode, fn) => {
+    const db = await open();
+    return new Promise((res, rej) => {
+      const t = db.transaction('kv', mode), req = fn(t.objectStore('kv'));
+      t.oncomplete = () => res(req && req.result); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+    });
+  };
+  return { get: k => run('readonly', s => s.get(k)), set: (k, v) => run('readwrite', s => s.put(v, k)), del: k => run('readwrite', s => s.delete(k)) };
+})();
+
+/* =========================================================
+   LEITURA DOS CAMPOS
+   ========================================================= */
+const cssImgRe = (prop) => new RegExp(prop.replace(/[-]/g, '\\-') + '\\s*:\\s*url\\(\\s*(["\']?)([\\s\\S]*?)\\1\\s*\\)');
+
+function scan(doc) {
+  const list = [], map = new Map();
+  const groupOf = (el) => el.closest('[data-cms-group]')?.getAttribute('data-cms-group') || 'Outros';
+  const push = (key, f) => {
+    if (!key) return;
+    if (map.has(key)) { map.get(key).els.push(...f.els); return; }
+    f.key = key;
+    /* campo de um item de lista (ex.: um produto): a chave contém o id do item */
+    if (f.itemEl) {
+      const id = f.itemEl.getAttribute('data-cms-item');
+      if (key.includes('.' + id + '.')) { f.item = id; f.list = f.itemEl.closest('[data-cms-list]')?.getAttribute('data-cms-list') || ''; }
+    }
+    delete f.itemEl;
+    map.set(key, f); list.push(f);
+  };
+  doc.querySelectorAll('[data-cms],[data-cms-img],[data-cms-attr],[data-cms-var],[data-cms-cssimg],[data-cms-config]').forEach(el => {
+    const d = el.dataset, label = d.cmsLabel || '', group = groupOf(el);
+    const itemEl = el.closest('[data-cms-item]');
+    const common = { label, group, max: +d.cmsMax || 1600, square: 'cmsSquare' in d, optional: 'cmsOptional' in d, pub: 'cmsPublic' in d,
+      empty: d.cmsEmpty || '', itemEl, item: '', list: '',
+      hint: d.cmsHint || '', options: d.cmsOptions ? d.cmsOptions.split('|').map(x => x.trim()).filter(Boolean) : null };
+    if (d.cms !== undefined) push(d.cms, { ...common, kind: 'text', type: d.cmsType || 'text', els: [el] });
+    if (d.cmsImg !== undefined) push(d.cmsImg, { ...common, kind: 'img', els: [el] });
+    if (d.cmsAttr !== undefined) push(d.cmsKey, { ...common, kind: 'attr', attr: d.cmsAttr, type: d.cmsType || 'text', els: [el] });
+    if (d.cmsVar !== undefined) {
+      const target = doc.querySelector(d.cmsTarget);
+      if (target) push(d.cmsKey, { ...common, kind: 'var', prop: d.cmsVar, targetSel: d.cmsTarget, els: [target] });
+    }
+    if (d.cmsCssimg !== undefined) push(d.cmsKey, { ...common, kind: 'cssimg', prop: d.cmsCssimg, els: [el] });
+    if (d.cmsConfig !== undefined) {
+      let cfg = {}; try { cfg = JSON.parse(el.textContent); } catch (e) {}
+      const keys = [...CONFIG_SCHEMA.map(s => s.k), ...Object.keys(cfg).filter(k => !CONFIG_SCHEMA.some(s => s.k === k))];
+      keys.forEach(k => {
+        const s = CONFIG_SCHEMA.find(x => x.k === k) || { k, label: k };
+        push('config.' + k, { ...common, kind: 'config', prop: k, type: s.type || 'text', label: s.label, hint: s.hint, els: [el] });
+      });
+    }
+  });
+  return list;
+}
+
+function getVal(f) {
+  const el = f.els[0];
+  switch (f.kind) {
+    case 'text':
+      if (f.type === 'lines') return [...el.querySelectorAll('li')].map(li => norm(li.textContent)).filter(Boolean).join('\n');
+      return f.type === 'rich' ? htmlToRich(el.innerHTML) : norm(el.textContent);
+    case 'img': return { src: el.getAttribute('src') || '', alt: el.getAttribute('alt') || '' };
+    case 'attr': return el.getAttribute(f.attr) || '';
+    case 'var': return el.style.getPropertyValue(f.prop).trim();
+    case 'cssimg': { const m = el.textContent.match(cssImgRe(f.prop)); return m ? m[2] : ''; }
+    case 'config': { try { const c = JSON.parse(el.textContent); return c[f.prop] == null ? '' : String(c[f.prop]); } catch (e) { return ''; } }
+  }
+  return '';
+}
+
+function setVal(f, v) {
+  f.els.forEach(el => {
+    switch (f.kind) {
+      case 'text': setText(el, f.type, v); break;
+      case 'img':
+        if (el.getAttribute('src') !== v.src) { el.removeAttribute('srcset'); el.removeAttribute('sizes'); }
+        el.setAttribute('src', v.src); el.setAttribute('alt', v.alt); break;
+      case 'attr': el.setAttribute(f.attr, v); break;
+      case 'var': el.style.setProperty(f.prop, v); break;
+      case 'cssimg': el.textContent = el.textContent.replace(cssImgRe(f.prop), `${f.prop}: url("${String(v).replace(/"/g, '%22')}")`); break;
+      case 'config': {
+        let c = {}; try { c = JSON.parse(el.textContent); } catch (e) {}
+        c[f.prop] = v;
+        el.textContent = '\n' + JSON.stringify(c, null, 2).replace(/</g, '\\u003c') + '\n';
+        break;
+      }
+    }
+  });
+}
+
+/* Lista de detalhes: uma linha por item; "Rótulo: valor" deixa o rótulo em destaque */
+function linesToHtml(text) {
+  return String(text).split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+    const i = l.indexOf(':');
+    return i > 0 && i < 40 ? `<li><strong>${esc(l.slice(0, i + 1))}</strong> ${esc(l.slice(i + 1).trim())}</li>` : `<li>${esc(l)}</li>`;
+  }).join('');
+}
+function setText(el, type, v) {
+  if (type === 'rich') el.innerHTML = richToHtml(v);
+  else if (type === 'lines') el.innerHTML = linesToHtml(v);
+  else el.textContent = v;
+}
+function htmlToRich(html) {
+  const t = html.replace(/\s*<br\s*\/?>\s*/gi, '\n')
+    .replace(/<(strong|b)>([\s\S]*?)<\/\1>/gi, '**$2**')
+    .replace(/<[^>]+>/g, '');
+  return decode(t).replace(/[ \t\r]+/g, ' ').replace(/ *\n */g, '\n').trim();
+}
+function richToHtml(text) {
+  return String(text).split('\n').map(line => esc(line).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')).join(' <br>');
+}
+
+const serialize = (p = cur()) => '<!doctype html>\n' + p.doc.documentElement.outerHTML + '\n';
+const changed = (f) => vk(f.value) !== S.baseline.get(f.key);
+const pageDirty = (p) => !!(p && p.doc) && (p.force || S.fields.some(f => f.pages.includes(p.file) && changed(f)));
+const dirtyPages = () => S.pages.filter(pageDirty);
+const changedCount = () => S.fields.filter(changed).length + S.pages.filter(p => p.doc && p.force).length;
+
+function parseSite(html) {
+  if (!html || typeof html !== 'string') return null;
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.querySelector('[data-cms],[data-cms-img],[data-cms-attr],[data-cms-config]') ? doc : null;
+}
+const metaPage = (doc) => (doc.querySelector('meta[name="cms-page"]')?.getAttribute('content') || '').trim();
+const signature = (doc) => JSON.stringify(scan(doc).map(f => [f.key, vk(getVal(f))]));
+
+/* =========================================================
+   MONTAGEM: junta os campos das páginas (campos com a mesma chave
+   aparecem nas duas e são editados juntos)
+   ========================================================= */
+function build(baseline, opts = {}) {
+  const all = [], map = new Map();
+  S.pages.forEach(p => {
+    if (!p.doc) return;
+    scan(p.doc).forEach(f => {
+      const g = map.get(f.key);
+      if (g) {
+        if (g.kind !== f.kind) return;
+        g.els.push(...f.els);
+        if (!g.pages.includes(p.file)) g.pages.push(p.file);
+      } else { f.pages = [p.file]; map.set(f.key, f); all.push(f); }
+    });
+  });
+  S.fields = all; S.byKey = map;
+  all.forEach(f => {
+    f.value = getVal(f);
+    if (f.els.length > 1) {
+      const k = vk(f.value);
+      const odd = f.els.filter(el => vk(getVal({ ...f, els: [el] })) !== k);
+      if (odd.length) {
+        setVal(f, f.value);
+        odd.forEach(el => { const p = S.pages.find(pg => pg.doc === el.ownerDocument); if (p) p.force = true; });
+      }
+    }
+  });
+  S.baseline = new Map(baseline ? Object.entries(baseline) : []);
+  all.forEach(f => { if (!S.baseline.has(f.key)) S.baseline.set(f.key, vk(f.value)); });
+  if (!pageOf(S.page)?.doc) S.page = loaded()[0].file;
+  const scroll = $('#panel-scroll').scrollTop;
+  hideStart(); renderPages(); renderPanel({ keep: !!opts.keep }); reloadPreview(!opts.keep); updateStatus(); syncBrand();
+  if (opts.keep) { $('#panel-scroll').scrollTop = scroll; const q = $('#search').value; if (q) filterFields(q); }
+}
+
+/* =========================================================
+   CARREGAR
+   ========================================================= */
+const remember = (file, html) => DB.set('last:' + file, { html, at: Date.now() }).catch(() => {});
+async function lastSaved(file) {
+  let v = null;
+  try { v = await DB.get('last:' + file); } catch (e) {}
+  if (!v && file === 'index.html') { try { v = await DB.get('last-site'); } catch (e) {} }
+  return v && parseSite(v.html) ? v : null;
+}
+
+async function fetchPage(file) {
+  if (location.protocol === 'file:') {
+    if (S.dir && await dirPermission(S.dir, false)) {
+      try { const t = await (await (await S.dir.getFileHandle(file)).getFile()).text(); if (parseSite(t)) return t; } catch (e) {}
+    }
+    return exportFromDisk(file);
+  }
+  /* No GitHub, lê direto do repositório: o site publicado pode levar alguns minutos para atualizar */
+  if (S.gh.token && S.gh.head) {
+    const r = await gh(`/repos/${S.gh.repo}/contents/${file}?ref=${S.gh.head}`, { raw: true });
+    if (r.ok && parseSite(r.text)) return r.text;
+  }
+  try {
+    const r = await fetch(file + '?v=' + Date.now(), { cache: 'no-store' });
+    if (r.ok) { const t = await r.text(); return parseSite(t) ? t : null; }
+  } catch (e) {}
+  return null;
+}
+
+/* Aberto do computador: carrega a página escondida e ela devolve uma cópia de si mesma */
+function exportFromDisk(file) {
+  return new Promise(resolve => {
+    const fr = document.createElement('iframe');
+    fr.setAttribute('aria-hidden', 'true'); fr.tabIndex = -1;
+    fr.style.cssText = 'position:fixed;left:-10000px;top:0;width:1200px;height:800px;border:0;opacity:0;pointer-events:none';
+    let done = false, t = 0;
+    const onMsg = (e) => { if (e.source === fr.contentWindow && e.data && typeof e.data.cmsExport === 'string') end(e.data.cmsExport); };
+    const end = (html) => {
+      if (done) return; done = true;
+      window.removeEventListener('message', onMsg); clearTimeout(t);
+      setTimeout(() => fr.remove(), 0);
+      resolve(html && parseSite(html) ? html : null);
+    };
+    window.addEventListener('message', onMsg);
+    fr.addEventListener('load', () => setTimeout(() => end(null), 1500));
+    t = setTimeout(() => end(null), 9000);
+    fr.src = file + '#cms-export';
+    document.body.append(fr);
+  });
+}
+
+async function loadFresh() {
+  const results = await Promise.all(S.pages.map(p => fetchPage(p.file)));
+  const newer = [];
+  for (let i = 0; i < S.pages.length; i++) {
+    const p = S.pages[i];
+    let html = results[i];
+    p.fromMemory = 0;
+    if (location.protocol === 'file:') {
+      const last = await lastSaved(p.file);
+      if (!html && last) { html = last.html; p.fromMemory = last.at; }
+      else if (html && last && last.at > Date.now() - 1000 * 60 * 60 * 24 * 60) {
+        const a = parseSite(html), b = parseSite(last.html);
+        if (a && b && signature(a) !== signature(b)) newer.push({ p, last });
+      }
+    } else if (html) remember(p.file, html);
+    p.orig = html || null; p.doc = parseSite(html); p.force = false;
+  }
+  return newer;
+}
+
+async function detectServer() {
+  if (location.protocol === 'file:') return;
+  try {
+    const r = await fetch('save.php?acao=status', { cache: 'no-store', credentials: 'same-origin' });
+    const t = await r.text();
+    if (/^\s*<\?php/.test(t)) { S.server.leak = true; return; }
+    const j = JSON.parse(t);
+    if (j && j.ok) { S.server.available = true; S.server.logged = !!j.logado; S.server.defaultPass = !!j.senhaPadrao; }
+  } catch (e) {}
+}
+
+/* Copia textos e imagens de outro arquivo (ex.: versão antiga do site) para as páginas atuais */
+function importHtml(html) {
+  const doc = parseSite(html); if (!doc) return -1;
+  let n = 0;
+  scan(doc).forEach(src => {
+    const f = S.byKey.get(src.key);
+    if (!f || f.kind !== src.kind) return;
+    const v = getVal(src);
+    if (vk(v) === vk(f.value)) return;
+    if (f.kind === 'img' && !v.src && !f.optional) return;
+    f.value = v; setVal(f, v); n++;
+  });
+  if (n) { renderPages(); renderPanel(); reloadPreview(); updateStatus(); syncBrand(); queueDraft(); }
+  return n;
+}
+
+/* =========================================================
+   PAINEL
+   ========================================================= */
+function renderPages() {
+  const box = $('#pages'); box.innerHTML = '';
+  S.pages.forEach(p => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.dataset.file = p.file;
+    b.setAttribute('aria-pressed', String(p.file === S.page));
+    b.disabled = !p.doc;
+    b.title = p.doc ? p.file : `${p.file} não foi encontrado`;
+    b.innerHTML = `<span>${esc(p.name)}</span><span class="dot dot--warn" hidden title="Com alterações"></span>`;
+    b.addEventListener('click', () => switchPage(p.file));
+    box.append(b);
+  });
+  renderPageDots();
+}
+function renderPageDots() {
+  $$('#pages button').forEach(b => { const d = $('.dot', b); if (d) d.hidden = !pageDirty(pageOf(b.dataset.file)); });
+}
+function switchPage(file, hash) {
+  const p = pageOf(file); if (!p || !p.doc) return;
+  if (file === S.page) { if (hash) scrollPreview(hash); return; }
+  S.page = file;
+  renderPages(); renderPanel();
+  const q = $('#search').value; if (q) filterFields(q);
+  $('#panel-scroll').scrollTop = 0;
+  reloadPreview(true, hash); syncBrand();
+}
+
+function renderPanel(opts = {}) {
+  const wrap = $('#groups');
+  const wasOpen = opts.keep ? new Set($$('.grp[open]', wrap).map(g => g.dataset.group)) : null;
+  wrap.innerHTML = ''; S.ui.clear();
+  const groups = new Map();
+  const fields = S.fields.filter(f => f.pages.includes(S.page));
+  fields.forEach(f => { if (!groups.has(f.group)) groups.set(f.group, []); groups.get(f.group).push(f); });
+  const names = [...groups.keys()].sort((a, b) => {
+    const ia = GROUP_ORDER.indexOf(a), ib = GROUP_ORDER.indexOf(b);
+    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+  });
+  names.forEach((name, i) => {
+    const det = document.createElement('details');
+    det.className = 'grp'; det.dataset.group = name;
+    det.open = wasOpen ? wasOpen.has(name) : i === 0;
+    det.innerHTML = `<summary><span class="grp__name">${esc(name)}</span><span class="grp__mod" hidden></span><span class="grp__count">${groups.get(name).length}</span><svg class="ic grp__chev"><use href="#i-chev"/></svg></summary><div class="grp__body"></div>`;
+    const body = $('.grp__body', det);
+    const boxes = new Map(), lastBox = new Map();
+    groups.get(name).forEach(f => {
+      if (!f.item) { body.append(fieldUi(f)); return; }
+      let box = boxes.get(f.item);
+      if (!box) { box = itemBox(f.list, f.item); boxes.set(f.item, box); lastBox.set(f.list, box); body.append(box); }
+      $('.item__body', box).append(fieldUi(f));
+    });
+    lastBox.forEach((box, list) => {
+      const add = document.createElement('button');
+      add.type = 'button'; add.className = 'btn btn--sm btn--outline add-item';
+      add.innerHTML = `<svg class="ic"><use href="#i-plus"/></svg>Adicionar ${esc(listLabel(list).toLowerCase())}`;
+      add.addEventListener('click', () => addItem(list));
+      box.after(add);
+    });
+    boxes.forEach((box, id) => {
+      const nameF = S.fields.find(f => f.item === id && f.kind === 'text' && f.type === 'text' && /nome|titulo/i.test(f.key)) || S.fields.find(f => f.item === id && f.kind === 'text');
+      $('.item__name', box).textContent = nameF ? nameF.value : '';
+    });
+    wrap.append(det);
+  });
+  $('#field-count').textContent = `${fields.length} campos`;
+  $('#field-count').title = `${fields.length} campos editáveis em ${S.page}`;
+  refreshMods();
+}
+
+/* =========================================================
+   LISTAS (ex.: produtos): adicionar, remover e reordenar
+   ========================================================= */
+const listEl = (list) => cur().doc.querySelector(`[data-cms-list="${CSS.escape(list)}"]`);
+const listItems = (list) => { const l = listEl(list); return l ? [...l.children].filter(c => c.hasAttribute('data-cms-item')) : []; };
+const listLabel = (list) => (listEl(list)?.getAttribute('data-cms-list-label') || 'Item');
+
+function itemBox(list, id) {
+  const items = listItems(list);
+  const idx = items.findIndex(el => el.getAttribute('data-cms-item') === id);
+  const box = document.createElement('div');
+  box.className = 'item'; box.dataset.item = id;
+  box.innerHTML = `<div class="item__head">
+      <span class="item__title">${esc(listLabel(list))} ${idx + 1}<span class="item__name"></span></span>
+      <button type="button" class="item__btn" data-act="up" title="Mover para cima" aria-label="Mover para cima" ${idx <= 0 ? 'disabled' : ''}><svg class="ic"><use href="#i-up"/></svg></button>
+      <button type="button" class="item__btn" data-act="down" title="Mover para baixo" aria-label="Mover para baixo" ${idx >= items.length - 1 ? 'disabled' : ''}><svg class="ic"><use href="#i-down"/></svg></button>
+      <button type="button" class="item__btn item__btn--del" data-act="del" title="Remover" aria-label="Remover" ${items.length <= 1 ? 'disabled' : ''}><svg class="ic"><use href="#i-trash"/></svg></button>
+    </div><div class="item__body"></div>`;
+  $('[data-act="up"]', box).addEventListener('click', () => moveItem(list, id, -1));
+  $('[data-act="down"]', box).addEventListener('click', () => moveItem(list, id, 1));
+  $('[data-act="del"]', box).addEventListener('click', () => removeItem(list, id));
+  return box;
+}
+
+function structural(focusKey) {
+  cur().force = true;
+  if (focusKey) S.afterLoad = () => { const f = S.byKey.get(focusKey); if (f) flashInPreview(f); };
+  build(Object.fromEntries(S.baseline), { keep: true });
+  queueDraft();
+  if (focusKey) setTimeout(() => focusField(focusKey), 60);
+}
+
+function addItem(list) {
+  const items = listItems(list); if (!items.length) return;
+  const tpl = items[items.length - 1], oldId = tpl.getAttribute('data-cms-item');
+  const max = Math.max(0, ...items.map(el => +((el.getAttribute('data-cms-item').match(/-(\d+)$/) || [0, 0])[1])));
+  const newId = `${list}-${max + 1}`;
+  const clone = tpl.cloneNode(true);
+  clone.setAttribute('data-cms-item', newId);
+  const token = '.' + oldId + '.', newToken = '.' + newId + '.';
+  [clone, ...clone.querySelectorAll('*')].forEach(el => ['data-cms', 'data-cms-img', 'data-cms-key'].forEach(a => {
+    const v = el.getAttribute(a); if (v && v.includes(token)) el.setAttribute(a, v.split(token).join(newToken));
+  }));
+  let focusKey = '';
+  clone.querySelectorAll('[data-cms]').forEach(el => {
+    const k = el.getAttribute('data-cms'); if (!k.includes(newToken) || el.hasAttribute('data-cms-keep')) return;
+    if (!focusKey && /nome|titulo/i.test(k)) { el.textContent = 'Novo ' + listLabel(list).toLowerCase(); focusKey = k; }
+    else el.textContent = '';
+  });
+  clone.querySelectorAll('[data-cms-img]').forEach(img => {
+    if (!img.getAttribute('data-cms-img').includes(newToken)) return;
+    img.setAttribute('src', ''); img.setAttribute('alt', ''); img.removeAttribute('srcset'); img.removeAttribute('sizes');
+  });
+  tpl.after(clone);
+  tpl.after(cur().doc.createTextNode('\n      '));
+  structural(focusKey);
+  toast(`${listLabel(list)} adicionado. Preencha os campos e publique.`);
+}
+
+function removeItem(list, id) {
+  const items = listItems(list);
+  if (items.length <= 1) { toast(`Deixe pelo menos 1 ${listLabel(list).toLowerCase()} na lista.`, 'err'); return; }
+  const el = items.find(x => x.getAttribute('data-cms-item') === id); if (!el) return;
+  const name = (S.fields.find(f => f.item === id && /nome|titulo/i.test(f.key)) || {}).value || listLabel(list);
+  if (!confirm(`Remover “${name}”?`)) return;
+  const prev = el.previousSibling; if (prev && prev.nodeType === 3 && !prev.textContent.trim()) prev.remove();
+  el.remove();
+  structural();
+  toast(`“${name}” removido.`);
+}
+
+function moveItem(list, id, dir) {
+  const items = listItems(list), i = items.findIndex(x => x.getAttribute('data-cms-item') === id);
+  const j = i + dir; if (i < 0 || j < 0 || j >= items.length) return;
+  if (dir < 0) items[j].before(items[i]); else items[j].after(items[i]);
+  structural();
+}
+
+function fieldUi(f) {
+  const id = 'fld-' + f.key.replace(/[^\w-]/g, '_');
+  const w = document.createElement('div');
+  w.className = 'field'; w.dataset.key = f.key;
+  const shared = f.pages.length > 1 ? `<span class="field__shared" title="Este campo aparece em ${f.pages.length} páginas. A mudança vale para todas.">Em ${f.pages.length} páginas</span>` : '';
+  w.innerHTML = `<div class="field__head"><label for="${id}">${esc(f.label || f.key)}</label>${shared}<span class="field__mod" title="Alterado"></span><button type="button" class="field__reset" title="Voltar ao valor publicado">Desfazer</button></div>`;
+  const isImage = f.kind === 'img' || f.kind === 'cssimg' || (f.kind === 'attr' && f.type === 'image');
+  const api = isImage ? imageUi(f, id, w) : textUi(f, id, w);
+  $('.field__reset', w).addEventListener('click', () => {
+    const b = S.baseline.get(f.key); if (b === undefined) return;
+    const v = f.kind === 'img' ? JSON.parse(b) : b;
+    change(f, v); api.set(v);
+  });
+  w.addEventListener('focusin', (e) => { if (!e.target.closest('.field__reset')) flashInPreview(f); });
+  S.ui.set(f.key, { wrap: w, api });
+  return w;
+}
+
+function autoGrow(t) { if (t.tagName !== 'TEXTAREA') return; t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight + 3, 360) + 'px'; }
+
+function textUi(f, id, w) {
+  const multi = f.type === 'multiline' || f.type === 'rich' || f.type === 'lines';
+  const inp = document.createElement(multi ? 'textarea' : 'input');
+  inp.id = id; inp.className = 'inp';
+  if (multi) inp.rows = 2; else inp.type = f.type === 'url' ? 'url' : f.type === 'tel' ? 'tel' : 'text';
+  inp.value = f.value;
+  inp.addEventListener('input', () => { change(f, inp.value); autoGrow(inp); });
+  w.append(inp);
+  requestAnimationFrame(() => autoGrow(inp));
+  const hints = [];
+  if (f.type === 'rich') hints.push('Escreva <code>**texto**</code> para negrito. Enter quebra a linha.');
+  if (f.type === 'lines') hints.push('Um item por linha. Escreva <code>Item: valor</code> para destacar o nome do item. Deixe vazio para esconder “Ver detalhes”.');
+  if (f.hint) hints.push(esc(f.hint));
+  if (f.options) {
+    const chips = document.createElement('div'); chips.className = 'chips';
+    f.options.forEach(val => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = val;
+      b.addEventListener('click', () => { inp.value = val; change(f, val); });
+      chips.append(b);
+    });
+    w.append(chips);
+  }
+  if (f.kind === 'var') {
+    hints.push('Ponto da foto que fica sempre visível: horizontal e vertical, em %.');
+    const chips = document.createElement('div'); chips.className = 'chips';
+    POS_PRESETS.forEach(([lbl, val]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = lbl;
+      b.addEventListener('click', () => { inp.value = val; change(f, val); });
+      chips.append(b);
+    });
+    w.append(chips);
+  }
+  if (f.kind === 'attr' && f.attr === 'data-wa') hints.push('Texto que já aparece escrito quando a pessoa abre o WhatsApp.');
+  if (f.kind === 'attr' && f.attr === 'data-msg') hints.push('A mensagem fica assim: “Olá! Meu nome é Ana. [este texto] [opção escolhida]. Meu WhatsApp: …”.');
+  if (hints.length) w.insertAdjacentHTML('beforeend', `<p class="hint">${hints.join(' ')}</p>`);
+  return { set(v) { inp.value = v; autoGrow(inp); } };
+}
+
+function imageUi(f, id, w) {
+  const src = () => f.kind === 'img' ? f.value.src : f.value;
+  const box = document.createElement('div');
+  box.className = 'imgf' + (f.kind === 'cssimg' || f.square ? ' imgf--contain' : '');
+  box.innerHTML = `
+    <div class="imgf__thumb"><img alt=""><span class="imgf__empty">Sem imagem</span><span class="imgf__drop">Solte a imagem aqui</span></div>
+    <div class="imgf__body">
+      <input class="inp" type="url" id="${id}" placeholder="Cole o link da imagem (https://…)" inputmode="url">
+      <div class="imgf__actions">
+        <label class="btn btn--sm btn--outline file-btn"><svg class="ic"><use href="#i-upload"/></svg>Enviar do computador<input type="file" accept="image/*"></label>
+        ${f.optional ? '<button type="button" class="btn btn--sm btn--ghost" data-remove>Remover</button>' : ''}
+      </div>
+      <p class="imgf__info"></p>
+    </div>`;
+  w.append(box);
+  let alt = null;
+  if (f.kind === 'img') {
+    w.insertAdjacentHTML('beforeend', `<label class="sub-label" for="${id}-alt">Descrição da imagem (para acessibilidade e Google)</label>`);
+    alt = document.createElement('input'); alt.className = 'inp'; alt.id = id + '-alt'; alt.value = f.value.alt;
+    alt.placeholder = 'Ex.: família sorrindo no sofá da sala';
+    alt.addEventListener('input', () => change(f, { src: f.value.src, alt: alt.value }));
+    w.append(alt);
+  }
+  if (f.pub) w.insertAdjacentHTML('beforeend', '<p class="hint">WhatsApp e redes sociais só leem esta imagem por um link público (https://…).</p>');
+
+  const img = $('img', box), url = $('input[type=url]', box), info = $('.imgf__info', box), empty = $('.imgf__empty', box);
+  img.addEventListener('error', () => { if (img.getAttribute('src')) { img.hidden = true; empty.hidden = false; empty.textContent = 'Prévia indisponível'; } });
+  img.addEventListener('load', () => { empty.textContent = 'Sem imagem'; });
+  const setInfo = (msg, cls = '') => { info.textContent = msg; info.className = 'imgf__info' + (cls ? ' ' + cls : ''); };
+  const render = () => {
+    const s = src();
+    img.hidden = !s; empty.hidden = !!s;
+    if (s) img.src = S.localImg.get(s) || s; else img.removeAttribute('src');
+    url.value = s.startsWith('data:') ? '' : s;
+    if (!s) setInfo(f.optional ? (f.empty || 'Sem foto.') : '');
+    else if (s.startsWith('data:')) setInfo(ghMode() ? 'Imagem do computador. Ao salvar, ela vai para a pasta img/uploads do site.' : `Imagem do computador, guardada dentro do site (${kb(dataUriBytes(s))}).`);
+    else if (S.localImg.has(s)) setInfo('Imagem enviada para a pasta img/uploads do site.');
+    else if (/^uploads\//.test(s)) setInfo('Imagem enviada para o servidor.');
+    else if (/^img\/uploads\//.test(s)) setInfo('Imagem salva na pasta do site (img/uploads).');
+    else if (/^img\//.test(s)) setInfo('Imagem da pasta do site: ' + s);
+    else if (/^https?:/i.test(s)) setInfo('Imagem por link da internet.');
+    else setInfo('Arquivo: ' + s);
+  };
+  const apply = (s) => change(f, f.kind === 'img' ? { src: s, alt: alt ? alt.value : f.value.alt } : s);
+
+  const fromUrl = async () => {
+    let u = url.value.trim();
+    if (u === src()) return;
+    if (!u) { if (f.optional) { apply(''); render(); } else render(); return; }
+    if (/^\/\//.test(u)) u = 'https:' + u;
+    if (/unsplash\.com\/photos\//i.test(u) || /pinterest\.|instagram\.com|drive\.google\.com\/file/i.test(u)) {
+      setInfo('Esse é o link da página, não da imagem. Clique com o botão direito na foto e escolha “Copiar endereço da imagem”.', 'is-err');
+      return;
+    }
+    if (f.pub && !/^https?:\/\//i.test(u)) { setInfo('Use um link completo, começando com https://', 'is-err'); return; }
+    setInfo('Carregando a imagem…');
+    const ok = await canLoad(u);
+    if (!ok) { setInfo('Não consegui abrir essa imagem. Confira se é o endereço direto da foto (geralmente termina em .jpg, .png ou .webp).', 'is-err'); return; }
+    apply(u); render(); setInfo('Imagem atualizada.', 'is-ok');
+  };
+  url.addEventListener('change', fromUrl);
+  url.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); fromUrl(); } });
+  url.addEventListener('paste', () => setTimeout(fromUrl, 0));
+
+  const fromFile = async (file) => {
+    if (!file) return;
+    if (!/^image\//.test(file.type)) { setInfo('Esse arquivo não é uma imagem.', 'is-err'); return; }
+    if (file.size > 30 * 1024 * 1024) { setInfo('Imagem muito grande (máx. 30 MB).', 'is-err'); return; }
+    try {
+      setInfo('Otimizando a imagem…');
+      const blob = await processImage(file, { max: f.max, square: f.square });
+      let s = null;
+      if (S.server.available && await ensureLogin()) {
+        setInfo('Enviando para o servidor…');
+        s = await uploadImage(blob);
+        if (s && f.pub) s = new URL(s, location.href).href;
+        if (!s) setInfo('Não consegui enviar ao servidor. A imagem foi guardada dentro do site.', 'is-err');
+      }
+      if (!s && !S.server.available && !f.pub && location.protocol === 'file:' && S.dir && S.dirHasAdmin && await dirPermission(S.dir, false)) {
+        setInfo('Salvando a imagem na pasta do site…');
+        s = await saveImageToFolder(blob);
+      }
+      if (!s) {
+        if (f.pub && !ghMode()) { setInfo('Para esta imagem, publique pelo servidor ou use um link público (https://…).', 'is-err'); return; }
+        s = await blobToDataUrl(blob);
+      }
+      apply(s); render();
+      if (s.startsWith('data:') && ghMode()) setInfo('Imagem pronta. Ao salvar, ela vai para a pasta img/uploads do site.', 'is-ok');
+      else if (s.startsWith('data:') && dataUriBytes(s) > 450 * 1024) setInfo(`Imagem guardada dentro do site (${kb(dataUriBytes(s))}). Fotos grandes deixam o site mais lento para abrir.`, 'is-err');
+      else if (!info.classList.contains('is-err')) setInfo(s.startsWith('data:') ? `Imagem do computador, guardada dentro do site (${kb(dataUriBytes(s))}).` : /^img\/uploads\//.test(s) ? 'Imagem salva na pasta do site (img/uploads).' : 'Imagem enviada para o servidor.', 'is-ok');
+    } catch (e) {
+      console.error(e); setInfo('Não consegui ler essa imagem. Tente outro arquivo (JPG, PNG ou WebP).', 'is-err');
+    }
+  };
+  $('input[type=file]', box).addEventListener('change', (e) => { fromFile(e.target.files[0]); e.target.value = ''; });
+  const thumb = $('.imgf__thumb', box);
+  ['dragenter', 'dragover'].forEach(t => thumb.addEventListener(t, e => { e.preventDefault(); e.stopPropagation(); box.classList.add('is-drag'); }));
+  ['dragleave', 'drop'].forEach(t => thumb.addEventListener(t, e => { e.preventDefault(); e.stopPropagation(); box.classList.remove('is-drag'); }));
+  thumb.addEventListener('drop', e => fromFile(e.dataTransfer.files[0]));
+  const rm = $('[data-remove]', box);
+  if (rm) rm.addEventListener('click', () => { apply(''); render(); });
+
+  render();
+  return { set(v) { if (alt && v && typeof v === 'object') alt.value = v.alt; render(); } };
+}
+
+function canLoad(u) {
+  return new Promise(res => {
+    const i = new Image(); let done = false;
+    const end = (ok) => { if (!done) { done = true; res(ok); } };
+    i.onload = () => end(i.naturalWidth > 0); i.onerror = () => end(false);
+    setTimeout(() => end(false), 15000);
+    i.src = u;
+  });
+}
+
+async function processImage(file, { max = 1600, square = false } = {}) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+    let sw = img.naturalWidth, sh = img.naturalHeight, sx = 0, sy = 0;
+    if (!sw || !sh) throw new Error('imagem vazia');
+    if (square) { const m = Math.min(sw, sh); sx = (sw - m) / 2; sy = (sh - m) / 2; sw = sh = m; }
+    const scale = Math.min(1, max / Math.max(sw, sh));
+    const cw = Math.max(1, Math.round(sw * scale)), ch = Math.max(1, Math.round(sh * scale));
+    const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+    const ctx = c.getContext('2d'); ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
+    let blob = await new Promise(r => c.toBlob(r, 'image/webp', 0.82));
+    if (!blob || blob.type !== 'image/webp') {
+      const alpha = /png|gif|webp|svg/.test(file.type);
+      blob = await new Promise(r => c.toBlob(r, alpha ? 'image/png' : 'image/jpeg', 0.85));
+    }
+    return blob;
+  } finally { URL.revokeObjectURL(url); }
+}
+const blobToDataUrl = (b) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(b); });
+
+/* =========================================================
+   ALTERAÇÕES
+   ========================================================= */
+let draftT, reloadT;
+const queueDraft = () => { clearTimeout(draftT); draftT = setTimeout(saveDraft, 700); };
+function change(f, v) {
+  f.value = v; setVal(f, v);
+  if (!patchPreview(f, v)) { clearTimeout(reloadT); reloadT = setTimeout(() => reloadPreview(), 450); }
+  markMod(f); refreshGroupMods(); updateStatus();
+  queueDraft();
+  if (f.item && f.kind === 'text' && /nome|titulo/i.test(f.key)) {
+    const box = S.ui.get(f.key)?.wrap.closest('.item'); if (box) $('.item__name', box).textContent = v;
+  }
+  if (f.key === 'marca.logo' || f.key === 'marca.nome') syncBrand();
+}
+function markMod(f) { const ui = S.ui.get(f.key); if (ui) ui.wrap.classList.toggle('is-mod', changed(f)); }
+function refreshGroupMods() {
+  $$('.grp').forEach(g => {
+    const n = $$('.field.is-mod', g).length, el = $('.grp__mod', g);
+    el.hidden = !n; el.textContent = n === 1 ? '1 alterado' : `${n} alterados`;
+  });
+}
+function refreshMods() { S.fields.forEach(markMod); refreshGroupMods(); updateStatus(); }
+
+function updateStatus() {
+  const el = $('#status');
+  if (!hasSite()) { el.hidden = true; return; }
+  el.hidden = false;
+  const n = changedCount();
+  if (n) el.innerHTML = `<span class="dot dot--warn"></span>${n} ${n === 1 ? 'alteração' : 'alterações'} · ${S.draftOk ? 'rascunho salvo neste navegador' : 'rascunho não pôde ser salvo'}`;
+  else if (S.saved && S.saved.kind === 'publish') el.innerHTML = `<span class="dot dot--ok"></span>Salvo às ${hhmm(S.saved.at)} · as mudanças já estão no ar`;
+  else if (S.saved && S.saved.kind === 'github') el.innerHTML = `<span class="dot dot--ok"></span>Salvo às ${hhmm(S.saved.at)} · o site atualiza em 1 a 2 minutos`;
+  else if (S.saved && S.saved.kind === 'folder') el.innerHTML = `<span class="dot dot--ok"></span>Salvo às ${hhmm(S.saved.at)} ${folderTxt()}`;
+  else if (S.saved) el.innerHTML = `<span class="dot dot--ok"></span>Arquivos baixados às ${hhmm(S.saved.at)} · envie para a hospedagem`;
+  else el.innerHTML = '<span class="dot"></span>Sem alterações';
+  const btn = $('#btn-save'), done = !n && !!S.saved;
+  btn.disabled = !n;
+  btn.classList.toggle('is-saved', done);
+  $('use', btn).setAttribute('href', done ? '#i-check' : '#i-save');
+  $('.lbl-long', btn).textContent = done ? 'Salvo' : 'Salvar alterações';
+  $('.lbl-short', btn).textContent = done ? 'Salvo' : 'Salvar';
+  btn.title = !n ? 'Não há alterações para salvar'
+    : S.server.available ? 'Grava as alterações direto no site (Ctrl + S)'
+    : ghMode() ? (S.gh.token ? `Salva no GitHub (${S.gh.repo}) e atualiza o site (Ctrl + S)` : 'Conecta ao GitHub e salva direto no site (Ctrl + S)')
+    : FS_OK && !S.fsBlocked ? (S.dir ? `Salva ${folderTxt()} (Ctrl + S)` : 'Salva as páginas na pasta do site (Ctrl + S)')
+    : 'Baixa as páginas alteradas (Ctrl + S)';
+  renderPageDots();
+  document.title = (n ? '• ' : '') + 'Painel do site';
+}
+
+async function saveDraft() {
+  if (!hasSite()) return;
+  try {
+    if (!changedCount()) await DB.del('draft');
+    else {
+      const pages = {}, orig = {};
+      loaded().forEach(p => { pages[p.file] = serialize(p); if (p.orig) orig[p.file] = p.orig; });
+      await DB.set('draft', {
+        v: 2, pages, orig, baseline: Object.fromEntries(S.baseline), page: S.page,
+        force: S.pages.filter(p => p.force).map(p => p.file), savedAt: Date.now()
+      });
+    }
+    S.draftOk = true;
+  } catch (e) { S.draftOk = false; }
+  updateStatus();
+}
+
+async function discardAll() {
+  if (!hasSite() || !changedCount()) { toast('Não há alterações para descartar.'); return; }
+  if (!confirm('Descartar todas as alterações e voltar ao site como estava?')) return;
+  S.pages.forEach(p => { p.force = false; if (p.orig) p.doc = parseSite(p.orig); });
+  build();
+  try { await DB.del('draft'); } catch (e) {}
+  $('#notices').innerHTML = '';
+  toast('Alterações descartadas.');
+}
+
+function syncBrand() {
+  const logo = S.byKey.get('marca.logo'), name = S.byKey.get('marca.nome');
+  $('#bar-logo').style.backgroundImage = logo && logo.value ? `url("${logo.value}")` : '';
+  $('#bar-sub').textContent = name ? `${name.value} · ${S.page}` : S.page;
+}
+
+function markSaved(kind) {
+  S.baseline = new Map(S.fields.map(f => [f.key, vk(f.value)]));
+  loaded().forEach(p => { const h = serialize(p); p.orig = h; p.force = false; remember(p.file, h); });
+  S.saved = { at: Date.now(), kind };
+  DB.del('draft').catch(() => {});
+  $('#notices').innerHTML = '';
+  refreshMods();
+}
+
+/* =========================================================
+   PRÉVIA
+   ========================================================= */
+const PREVIEW_INJECT = `<style id="cms-preview">
+.js .reveal{opacity:1!important;transform:none!important;transition:none!important}
+html{scroll-behavior:auto!important}
+.cms-pick [data-cms],.cms-pick [data-cms-img],.cms-pick [data-cms-key]{cursor:pointer}
+.cms-hover{outline:2px dashed #FF6B5E!important;outline-offset:3px}
+img.cms-hover{outline-offset:-4px}
+.cms-flash{outline:3px solid #3CCFF2!important;outline-offset:4px}
+<\/style>
+<script>
+(function(){
+  window.open=function(){return null};
+  var SEL='[data-cms],[data-cms-img],[data-cms-key]';
+  function pick(){return window.__cmsPick!==false}
+  function target(e){
+    var t=e.target.closest&&e.target.closest(SEL);
+    if(!t&&e.target.querySelector){t=e.target.querySelector(':scope > img[data-cms-img]');}
+    return t;
+  }
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a');
+    var href=a?(a.getAttribute('href')||''):'';
+    if(a&&href.charAt(0)!=='#')e.preventDefault();
+    var t=pick()?target(e):null;
+    if(t){
+      e.preventDefault();e.stopPropagation();
+      parent.postMessage({cmsPick:t.getAttribute('data-cms')||t.getAttribute('data-cms-img')||t.getAttribute('data-cms-key')},'*');
+      return;
+    }
+    if(a&&/^[\\w-]+\\.html(#[\\w-]*)?$/i.test(href))parent.postMessage({cmsNav:href},'*');
+  },true);
+  document.addEventListener('submit',function(e){e.preventDefault()},true);
+  var last=null;
+  document.addEventListener('mouseover',function(e){
+    var t=pick()?target(e):null;
+    if(last&&last!==t)last.classList.remove('cms-hover');
+    if(t)t.classList.add('cms-hover'); last=t;
+  });
+  window.__setPick=function(v){window.__cmsPick=v;document.documentElement.classList.toggle('cms-pick',v);if(!v&&last){last.classList.remove('cms-hover');last=null}};
+  document.documentElement.classList.add('cms-pick');
+})();
+<\/script>`;
+
+const frame = () => $('#frame');
+const frameDoc = () => { try { return frame().contentDocument; } catch (e) { return null; } };
+
+function reveal(el) {
+  try { el.dispatchEvent(new (frame().contentWindow.CustomEvent)('cms-reveal', { bubbles: true })); } catch (e) {}
+}
+function scrollPreview(hash) {
+  try { const el = frameDoc().getElementById(String(hash).replace(/^#/, '')); if (el) { reveal(el); el.scrollIntoView(); } } catch (e) {}
+}
+
+function reloadPreview(first, hash) {
+  if (!hasSite()) return;
+  const fr = frame(); let y = 0, tab = '';
+  if (!first && fr.dataset.page === S.page) {
+    try { y = fr.contentWindow.scrollY || 0; tab = (frameDoc().querySelector('[data-cat]:not([hidden])') || {}).id || ''; } catch (e) {}
+  }
+  fr.onload = () => {
+    try {
+      fr.contentWindow.__setPick(S.pick);
+      if (hash) scrollPreview(hash);
+      else {
+        if (tab) { const p = frameDoc().getElementById(tab); if (p) reveal(p); }
+        if (y) fr.contentWindow.scrollTo(0, y);
+      }
+      const after = S.afterLoad; S.afterLoad = null;
+      if (after) setTimeout(after, 30);
+    } catch (e) {}
+  };
+  fr.dataset.page = S.page;
+  let html = serialize();
+  S.localImg.forEach((uri, path) => { html = html.split(path).join(uri); });
+  fr.srcdoc = html.replace(/<\/head>/i, PREVIEW_INJECT + '</head>');
+}
+
+function frameEls(f) {
+  const d = frameDoc(); if (!d) return [];
+  const sel = f.kind === 'text' ? `[data-cms="${f.key}"]` : f.kind === 'img' ? `[data-cms-img="${f.key}"]`
+    : f.kind === 'attr' ? `[data-cms-key="${f.key}"]` : f.kind === 'var' ? f.targetSel : null;
+  return sel ? [...d.querySelectorAll(sel)] : [];
+}
+
+function patchPreview(f, v) {
+  const d = frameDoc(); if (!d || !d.body) return false;
+  if (!f.pages.includes(S.page)) return true;
+  switch (f.kind) {
+    case 'text': {
+      const els = frameEls(f); if (!els.length) return f.els[0].closest('head') ? true : false;
+      els.forEach(el => {
+        setText(el, f.type, v);
+        try { el.dispatchEvent(new (frame().contentWindow.CustomEvent)('cms-updated', { bubbles: true })); } catch (e) {}
+      });
+      return true;
+    }
+    case 'img': {
+      const els = frameEls(f); if (!els.length) return false;
+      els.forEach(el => {
+        if (el.getAttribute('src') !== v.src) {
+          el.removeAttribute('srcset'); el.removeAttribute('sizes'); el.setAttribute('src', v.src);
+          const m = el.closest('[data-media]'); if (m) m.classList.remove('is-fallback');
+        }
+        el.setAttribute('alt', v.alt);
+      });
+      return true;
+    }
+    case 'attr':
+      if (['data-wa', 'data-ig', 'data-video-id'].includes(f.attr)) return false;
+      frameEls(f).forEach(el => el.setAttribute(f.attr, v)); return true;
+    case 'var': { const t = d.querySelector(f.targetSel); if (t) t.style.setProperty(f.prop, v); return true; }
+    case 'cssimg': d.documentElement.style.setProperty(f.prop, `url("${String(v).replace(/"/g, '%22')}")`); return true;
+    default: return false;
+  }
+}
+
+function flashInPreview(f) {
+  const els = frameEls(f).filter(el => !el.closest('head'));
+  if (els.length && !els.some(e => e.getClientRects().length)) reveal(els[0]);
+  let el = els.find(e => e.getClientRects().length) || els.map(e => e.parentElement).find(p => p && p.getClientRects().length);
+  if (!el) return;
+  el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  el.classList.add('cms-flash'); setTimeout(() => el.classList.remove('cms-flash'), 1400);
+}
+
+function focusField(key) {
+  const ui = S.ui.get(key); if (!ui) return;
+  setView('edit');
+  if ($('#search').value) { $('#search').value = ''; filterFields(''); }
+  const det = ui.wrap.closest('details'); if (det) det.open = true;
+  ui.wrap.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  const inp = $('input:not([type=file]),textarea', ui.wrap);
+  if (inp) inp.focus({ preventScroll: true });
+  ui.wrap.classList.add('is-flash'); setTimeout(() => ui.wrap.classList.remove('is-flash'), 1300);
+}
+
+function layoutPreview() {
+  const stage = $('#stage'), dev = $('#device'), fr = frame();
+  const W = stage.clientWidth, H = stage.clientHeight; if (!W || !H) return;
+  if (S.device === 'desktop') {
+    const base = 1280, s = Math.min(1, W / base);
+    dev.className = 'device'; Object.assign(dev.style, { left: '0px', top: '0px', width: W + 'px', height: H + 'px' });
+    Object.assign(fr.style, { width: base + 'px', height: (H / s) + 'px', transform: `scale(${s})` });
+  } else {
+    const base = 390, pad = 20, s = Math.min(1, (W - pad * 2) / base), h = H - pad * 2;
+    dev.className = 'device device--mobile';
+    Object.assign(dev.style, { left: ((W - base * s) / 2) + 'px', top: pad + 'px', width: base * s + 'px', height: h + 'px' });
+    Object.assign(fr.style, { width: base + 'px', height: (h / s) + 'px', transform: `scale(${s})` });
+  }
+}
+
+/* =========================================================
+   SALVAR: baixar ou publicar
+   ========================================================= */
+function downloadFile(p) {
+  const blob = new Blob([serialize(p)], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = p.file;
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+
+async function download() {
+  if (!hasSite()) return;
+  if (S.server.available) {
+    downloadFile(cur());
+    toast(`Cópia de ${cur().file} baixada para o seu computador.`, 'ok', 5000);
+    return;
+  }
+  const dirty = dirtyPages();
+  const files = dirty.length ? dirty : [cur()];
+  for (let i = 0; i < files.length; i++) { downloadFile(files[i]); if (i < files.length - 1) await wait(700); }
+  if (dirty.length) markSaved('download');
+  const names = listNames(files.map(p => p.file));
+  toast(`Baixamos ${names}. Envie para a hospedagem (ou para a pasta do site), substituindo ${files.length > 1 ? 'os arquivos antigos' : 'o arquivo antigo'}.`, 'ok', 8000);
+}
+
+/* ---------- Salvar na pasta do site (Chrome e Edge) ---------- */
+async function dirPermission(h, ask) {
+  if (!h) return false;
+  try {
+    const opts = { mode: 'readwrite' };
+    if ((await h.queryPermission(opts)) === 'granted') return true;
+    if (ask) return (await h.requestPermission(opts)) === 'granted';
+  } catch (e) {}
+  return false;
+}
+async function hasEntry(dir, name) { try { await dir.getFileHandle(name); return true; } catch (e) { return false; } }
+async function writeFile(fh, data) { const w = await fh.createWritable(); await w.write(data); await w.close(); }
+const folderTxt = () => S.dirName ? `na pasta “${esc(S.dirName)}”` : 'na pasta do site';
+const stamp = () => { const d = new Date(), p = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`; };
+
+function askFolder() {
+  const dlg = $('#folder-dlg');
+  return new Promise(resolve => {
+    let choice = 'cancel';
+    const btns = $$('[data-choice]', dlg);
+    const onClick = (e) => { choice = e.currentTarget.dataset.choice; dlg.close(); };
+    btns.forEach(b => b.addEventListener('click', onClick));
+    dlg.addEventListener('close', () => { btns.forEach(b => b.removeEventListener('click', onClick)); resolve(choice); }, { once: true });
+    dlg.showModal();
+    setTimeout(() => $('[data-choice="pick"]', dlg).focus(), 30);
+  });
+}
+
+async function connectFolder() {
+  let h;
+  try { h = await window.showDirectoryPicker({ id: 'praeservare-site', mode: 'readwrite' }); }
+  catch (e) {
+    if (e && e.name === 'AbortError') return null;
+    /* o navegador não deixa salvar em pasta aqui: passa a baixar os arquivos */
+    if (e && (e.name === 'SecurityError' || e.name === 'TypeError' || e.name === 'NotAllowedError')) {
+      S.fsBlocked = true; helpSave(); updateStatus();
+      toast('Este navegador não deixou salvar direto na pasta. Vamos baixar os arquivos para você substituir na pasta do site.', 'err', 8000);
+      return 'blocked';
+    }
+    toast('Não foi possível abrir essa pasta. Escolha a pasta onde estão os arquivos do site.', 'err', 6000);
+    return null;
+  }
+  if (!await dirPermission(h, true)) { toast('Sem permissão para salvar nessa pasta.', 'err'); return null; }
+  if (!await hasEntry(h, 'index.html') && !confirm(`A pasta “${h.name}” não tem o arquivo index.html. Salvar nela mesmo assim?`)) return null;
+  /* A pasta fica lembrada só enquanto o painel está aberto (mais seguro em janelas anônimas) */
+  S.dir = h; S.dirName = h.name; S.dirHasAdmin = await hasEntry(h, 'admin.html');
+  helpSave(); updateStatus();
+  return h;
+}
+
+async function pruneBackups(dir, base, keep) {
+  const names = [];
+  try { for await (const [name, h] of dir.entries()) if (h.kind === 'file' && name.startsWith(base + '-') && name.endsWith('.html')) names.push(name); } catch (e) { return; }
+  names.sort();
+  while (names.length > keep) { try { await dir.removeEntry(names.shift()); } catch (e) {} }
+}
+
+async function writeToFolder(dir) {
+  const list = dirtyPages();
+  busy(true, 'Salvando…');
+  let backups = null;
+  try { backups = await dir.getDirectoryHandle('backups', { create: true }); } catch (e) {}
+  const ts = stamp(), failed = [];
+  for (const p of list) {
+    try {
+      const fh = await dir.getFileHandle(p.file, { create: true });
+      if (backups) {
+        try {
+          const old = await (await fh.getFile()).text();
+          if (old) {
+            const base = p.file.replace(/\.html?$/i, '');
+            await writeFile(await backups.getFileHandle(`${base}-${ts}.html`, { create: true }), old);
+            await pruneBackups(backups, base, 10);
+          }
+        } catch (e) {}
+      }
+      await writeFile(fh, serialize(p));
+    } catch (e) { console.error(e); failed.push(p.file); }
+  }
+  busy(false);
+  if (failed.length) { toast(`Não foi possível salvar ${listNames(failed)}. Confira a permissão da pasta e tente de novo.`, 'err', 8000); return false; }
+  markSaved('folder');
+  toast(`Pronto! ${listNames(list.map(p => p.file))} ${list.length > 1 ? 'foram salvos' : 'foi salvo'} ${folderTxt()}.`, 'ok', 6000);
+  return true;
+}
+
+async function saveImageToFolder(blob) {
+  try {
+    const ext = { 'image/webp': 'webp', 'image/png': 'png', 'image/jpeg': 'jpg' }[blob.type] || 'img';
+    const up = await (await S.dir.getDirectoryHandle('img', { create: true })).getDirectoryHandle('uploads', { create: true });
+    const name = `${stamp()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    await writeFile(await up.getFileHandle(name, { create: true }), blob);
+    return 'img/uploads/' + name;
+  } catch (e) { console.error(e); return null; }
+}
+
+/* =========================================================
+   GITHUB: o botão Salvar grava direto no repositório do site
+   (GitHub Pages publica sozinho em 1 a 2 minutos)
+   ========================================================= */
+const GH_API = 'https://api.github.com';
+const GH_KEY = 'painel-github';
+const ghMode = () => !S.server.available && location.protocol !== 'file:' && !!S.gh.repo;
+
+function ghDetect() {
+  if (location.protocol === 'file:') return '';
+  if (GITHUB_REPO) return GITHUB_REPO;
+  const m = location.hostname.match(/^([a-z0-9-]+)\.github\.io$/i);
+  if (!m) return '';
+  const seg = location.pathname.split('/').filter(Boolean);
+  /* usuario.github.io/repositorio/admin.html → repositorio · usuario.github.io/admin.html → usuario.github.io */
+  return m[1] + '/' + (seg.length > 1 ? seg[0] : m[1] + '.github.io');
+}
+
+async function gh(path, opts = {}) {
+  try {
+    const r = await fetch(GH_API + path, {
+      method: opts.method || 'GET', cache: 'no-store',
+      headers: {
+        Authorization: 'Bearer ' + (opts.token || S.gh.token),
+        Accept: opts.raw ? 'application/vnd.github.raw+json' : 'application/vnd.github+json',
+        ...(opts.body ? { 'Content-Type': 'application/json' } : {})
+      },
+      body: opts.body ? JSON.stringify(opts.body) : undefined
+    });
+    let data = null, text = '';
+    if (opts.raw && r.ok) text = await r.text();
+    else { try { data = await r.json(); } catch (e) {} }
+    return { ok: r.ok, status: r.status, data, text };
+  } catch (e) { return { ok: false, status: 0, data: null, text: '' }; }
+}
+
+function ghErrMsg(r) {
+  const m = (r && r.data && r.data.message) || '';
+  if (!r || !r.status) return 'Sem conexão com o GitHub. Confira a internet e tente de novo.';
+  if (r.status === 401) return 'A chave de acesso do GitHub expirou ou foi apagada. Conecte de novo.';
+  if (r.status === 403 && /rate limit/i.test(m)) return 'O GitHub pediu uma pausa. Espere alguns minutos e tente de novo.';
+  if (r.status === 403) return 'A chave de acesso não tem permissão para gravar. Crie outra com “Contents: Read and write”.';
+  if (r.status === 404) return 'Repositório não encontrado, ou a chave não tem acesso a ele.';
+  if (r.status === 409) return 'O repositório está vazio. Envie os arquivos do site para ele primeiro.';
+  if (r.status === 422) return 'O site mudou no GitHub enquanto você salvava. Tente salvar de novo.';
+  return `O GitHub recusou o salvamento (erro ${r.status}). Tente de novo.`;
+}
+
+function ghInit() {
+  if (location.protocol === 'file:' || S.server.available) return;
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(GH_KEY) || 'null'); } catch (e) {}
+  const det = ghDetect();
+  if (saved && saved.token && saved.repo && (!det || saved.repo.toLowerCase() === det.toLowerCase())) {
+    S.gh.repo = saved.repo; S.gh.token = saved.token; S.gh.branch = saved.branch || 'main';
+  } else S.gh.repo = det;
+}
+function ghForget() {
+  S.gh.token = ''; S.gh.head = '';
+  try { localStorage.removeItem(GH_KEY); } catch (e) {}
+}
+/* Confere a chave guardada e anota a versão atual do site */
+async function ghCheck() {
+  if (!S.gh.token) return;
+  const r = await gh(`/repos/${S.gh.repo}/git/ref/heads/${S.gh.branch}`);
+  if (r.ok) { S.gh.head = r.data.object.sha; return; }
+  if (r.status === 401 || r.status === 403 || r.status === 404) {
+    ghForget();
+    notice('A chave de acesso do GitHub guardada neste navegador expirou ou foi apagada. Conecte de novo para o botão <strong>Salvar</strong> publicar direto no site.', 'warn',
+      [{ label: 'Conectar ao GitHub', fn: () => ghConnect() }]);
+  }
+}
+
+function ghLink() {
+  const [owner = '', name = ''] = $('#gh-repo').value.trim().split('/');
+  const q = new URLSearchParams({ name: 'Painel do site', description: 'Botão Salvar do painel do site (admin.html)', expires_in: '366', contents: 'write' });
+  if (owner) q.set('target_name', owner);
+  $('#gh-new').href = 'https://github.com/settings/personal-access-tokens/new?' + q;
+  $('#gh-repo-name').textContent = name || 'o repositório do site';
+}
+let ghResolve = null;
+function ghConnect() {
+  const dlg = $('#gh-dlg');
+  $('#gh-repo').value = S.gh.repo || ghDetect();
+  $('#gh-token').value = ''; $('#gh-err').textContent = '';
+  ghLink();
+  if (!dlg.open) dlg.showModal();
+  setTimeout(() => ($('#gh-repo').value ? $('#gh-token') : $('#gh-repo')).focus(), 30);
+  return new Promise(res => { ghResolve = res; });
+}
+function ghClose(v) { const r = ghResolve; ghResolve = null; $('#gh-dlg').close(); if (r) r(v); }
+function bindGithub() {
+  $('#gh-repo').addEventListener('input', ghLink);
+  $('#gh-cancel').addEventListener('click', () => ghClose(false));
+  $('#gh-download').addEventListener('click', () => ghClose('download'));
+  $('#gh-dlg').addEventListener('close', () => { if (ghResolve) { const r = ghResolve; ghResolve = null; r(false); } });
+  $('#gh-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const repo = $('#gh-repo').value.trim().replace(/^https?:\/\/github\.com\//i, '').replace(/\.git$/i, '').replace(/\/+$/, '');
+    const token = $('#gh-token').value.trim(), err = $('#gh-err'), btn = $('#gh-ok');
+    if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { err.textContent = 'Escreva o repositório assim: usuario/repositorio'; return; }
+    if (!token) { err.textContent = 'Cole a chave de acesso.'; return; }
+    btn.disabled = true; btn.textContent = 'Verificando…'; err.textContent = '';
+    const info = await gh(`/repos/${repo}`, { token });
+    /* teste de gravação sem mexer no site: cria um bloco solto, que o GitHub descarta */
+    const probe = info.ok ? await gh(`/repos/${info.data.full_name}/git/blobs`, { token, method: 'POST', body: { content: '', encoding: 'utf-8' } }) : null;
+    const ref = probe && probe.ok ? await gh(`/repos/${info.data.full_name}/git/ref/heads/${info.data.default_branch || 'main'}`, { token }) : null;
+    btn.disabled = false; btn.textContent = 'Conectar';
+    if (!info.ok) {
+      err.textContent = info.status === 401 ? 'Chave inválida ou expirada. Confira se copiou a chave inteira.'
+        : info.status === 404 || info.status === 403 ? 'Não encontrei esse repositório com essa chave. Confira o nome e se, ao criar a chave, você escolheu esse repositório.'
+        : ghErrMsg(info);
+      return;
+    }
+    if (!probe.ok) {
+      err.textContent = probe.status === 403 || probe.status === 404 ? 'Essa chave só pode ler o repositório. Crie outra marcando o repositório em “Only select repositories” e “Contents: Read and write”.' : ghErrMsg(probe);
+      return;
+    }
+    S.gh.repo = info.data.full_name; S.gh.branch = info.data.default_branch || 'main'; S.gh.token = token;
+    S.gh.head = ref && ref.ok ? ref.data.object.sha : '';
+    try { localStorage.setItem(GH_KEY, JSON.stringify({ repo: S.gh.repo, branch: S.gh.branch, token })); } catch (er) {}
+    $('#gh-token').value = '';
+    helpSave(); helpPass(); updateStatus();
+    toast(`Conectado ao GitHub (${S.gh.repo}). Agora o Salvar publica direto no site.`, 'ok', 6000);
+    ghClose(true);
+  });
+}
+
+/* Grava vários arquivos num único commit */
+async function ghCommit(files, message, confirmHead) {
+  const R = `/repos/${S.gh.repo}`, br = S.gh.branch.split('/').map(encodeURIComponent).join('/');
+  const ref = await gh(`${R}/git/ref/heads/${br}`); if (!ref.ok) return ref;
+  const head = ref.data.object.sha;
+  if (confirmHead && !await confirmHead(head)) return { ok: false, cancelled: true };
+  const base = await gh(`${R}/git/commits/${head}`); if (!base.ok) return base;
+  const tree = [];
+  for (const f of files) {
+    const b = await gh(`${R}/git/blobs`, { method: 'POST', body: { content: f.content, encoding: f.encoding || 'utf-8' } });
+    if (!b.ok) return b;
+    tree.push({ path: f.path, mode: '100644', type: 'blob', sha: b.data.sha });
+  }
+  const t = await gh(`${R}/git/trees`, { method: 'POST', body: { base_tree: base.data.tree.sha, tree } }); if (!t.ok) return t;
+  const c = await gh(`${R}/git/commits`, { method: 'POST', body: { message, tree: t.data.sha, parents: [head] } }); if (!c.ok) return c;
+  const u = await gh(`${R}/git/refs/heads/${br}`, { method: 'PATCH', body: { sha: c.data.sha } }); if (!u.ok) return u;
+  S.gh.head = c.data.sha;
+  return { ok: true, sha: c.data.sha };
+}
+
+/* Fotos enviadas do computador (guardadas no rascunho dentro da página) viram arquivos em img/uploads */
+function ghImageJobs() {
+  const jobs = [], seen = new Map();
+  S.fields.filter(changed).forEach(f => {
+    if (!(f.kind === 'img' || f.kind === 'cssimg' || (f.kind === 'attr' && f.type === 'image'))) return;
+    const src = f.kind === 'img' ? f.value.src : f.value;
+    const m = /^data:image\/(webp|png|jpe?g|gif|avif);base64,/i.exec(src || '');
+    if (!m) return;
+    let job = seen.get(src);
+    if (!job) {
+      const ext = m[1].toLowerCase().replace('jpeg', 'jpg');
+      job = { uri: src, path: `img/uploads/${stamp()}-${Math.random().toString(36).slice(2, 8)}.${ext}`, fields: [] };
+      seen.set(src, job); jobs.push(job);
+    }
+    job.fields.push(f);
+  });
+  /* imagem de compartilhamento precisa de endereço completo */
+  jobs.forEach(j => { j.to = j.fields.some(f => f.pub) ? new URL(j.path, location.href).href : j.path; });
+  return jobs;
+}
+
+async function ghSave() {
+  const list = dirtyPages();
+  if (!list.length) { toast('Não há alterações para salvar.'); return; }
+  if (!S.gh.token) {
+    const r = await ghConnect();
+    if (r === 'download') return download();
+    if (r !== true) return;
+  }
+  const jobs = ghImageJobs();
+  const files = jobs.map(j => ({ path: j.path, content: j.uri.slice(j.uri.indexOf(',') + 1), encoding: 'base64' }));
+  list.forEach(p => {
+    let html = serialize(p);
+    jobs.forEach(j => { html = html.split(j.uri).join(j.to); });
+    files.push({ path: p.file, content: html });
+  });
+  busy(true, 'Salvando no GitHub…');
+  const r = await ghCommit(files, `Painel: atualiza ${list.map(p => p.file).join(', ')}`, async (head) => {
+    if (!S.gh.head || head === S.gh.head) return true;
+    busy(false);
+    const go = confirm('O site foi alterado no GitHub depois que você abriu o painel (em outro computador ou direto no GitHub).\n\nSalvar agora troca as páginas alteradas pela versão deste painel. Continuar?');
+    if (go) busy(true, 'Salvando no GitHub…');
+    return go;
+  });
+  busy(false);
+  if (!r.ok) {
+    if (r.cancelled) return;
+    if (r.status === 401) { ghForget(); helpSave(); updateStatus(); toast(ghErrMsg(r), 'err', 7000); if (await ghConnect() === true) return ghSave(); return; }
+    toast(ghErrMsg(r), 'err', 9000);
+    return;
+  }
+  jobs.forEach(j => {
+    S.localImg.set(j.to, j.uri);
+    j.fields.forEach(f => {
+      const v = f.kind === 'img' ? { src: j.to, alt: f.value.alt } : j.to;
+      f.value = v; setVal(f, v);
+      const ui = S.ui.get(f.key); if (ui) ui.api.set(v);
+    });
+  });
+  markSaved('github');
+  toast('Alterações salvas no GitHub! O site publicado atualiza em 1 a 2 minutos.', 'ok', 7000);
+}
+
+/* Troca a senha do painel direto no admin.html do GitHub */
+async function ghSetPassword(hash) {
+  busy(true, 'Trocando a senha…');
+  const cur = await gh(`/repos/${S.gh.repo}/contents/admin.html?ref=${encodeURIComponent(S.gh.branch)}`, { raw: true });
+  const re = /const SENHA_HASH = '[0-9a-f]{64}';/;
+  if (!cur.ok || !re.test(cur.text)) { busy(false); toast(cur.ok ? 'Não encontrei a linha da senha no admin.html do GitHub.' : ghErrMsg(cur), 'err', 8000); return false; }
+  const r = await ghCommit([{ path: 'admin.html', content: cur.text.replace(re, `const SENHA_HASH = '${hash}';`) }], 'Painel: troca a senha do painel');
+  busy(false);
+  if (!r.ok) { toast(ghErrMsg(r), 'err', 8000); return false; }
+  toast('Senha trocada! A nova senha passa a valer em 1 a 2 minutos, quando o site atualizar.', 'ok', 8000);
+  return true;
+}
+
+/* Botão "Salvar alterações": servidor (PHP) → publica; computador → grava na pasta; sem suporte → baixa */
+async function save() {
+  if (!hasSite()) return;
+  if (S.server.available) return publish();
+  if (ghMode()) return ghSave();
+  if (!dirtyPages().length) { toast('Não há alterações para salvar.'); return; }
+  if (!FS_OK || S.fsBlocked) return download();
+  let dir = S.dir;
+  if (dir && !await dirPermission(dir, true)) dir = null;
+  if (!dir) {
+    const choice = await askFolder();
+    if (choice === 'download') return download();
+    if (choice !== 'pick') return;
+    dir = await connectFolder();
+    if (dir === 'blocked') return download();
+    if (!dir) return;
+  }
+  return writeToFolder(dir);
+}
+
+async function api(acao, opts = {}) {
+  try {
+    const r = await fetch('save.php?acao=' + acao, {
+      method: 'POST', credentials: 'same-origin', cache: 'no-store',
+      headers: { 'X-Painel': '1', ...(opts.headers || {}) }, body: opts.body
+    });
+    let data = {}; try { data = await r.json(); } catch (e) {}
+    if (r.status === 401 && acao !== 'login') S.server.logged = false;
+    return { ok: r.ok && !!data.ok, status: r.status, data };
+  } catch (e) { return { ok: false, status: 0, data: { erro: 'Sem conexão com o servidor.' } }; }
+}
+
+let loginResolve = null;
+function ensureLogin(force) {
+  if (S.server.logged && !force) return Promise.resolve(true);
+  if (S.server.defaultPass) { toast('Defina uma senha no arquivo save.php para publicar pelo painel.', 'err', 6000); return Promise.resolve(false); }
+  const dlg = $('#login');
+  $('#login-err').textContent = ''; $('#login-pass').value = '';
+  if (!dlg.open) dlg.showModal();
+  setTimeout(() => $('#login-pass').focus(), 30);
+  return new Promise(res => { loginResolve = res; });
+}
+$('#login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const pass = $('#login-pass').value;
+  const r = await api('login', { body: JSON.stringify({ senha: pass }), headers: { 'Content-Type': 'application/json' } });
+  if (r.ok) { S.server.logged = true; $('#login').close(); loginResolve && loginResolve(true); loginResolve = null; }
+  else $('#login-err').textContent = r.data.erro || 'Não foi possível entrar.';
+});
+$('#login-cancel').addEventListener('click', () => $('#login').close());
+$('#login').addEventListener('close', () => { if (loginResolve) { loginResolve(false); loginResolve = null; } });
+
+async function uploadImage(blob) {
+  const ext = { 'image/webp': 'webp', 'image/png': 'png', 'image/jpeg': 'jpg' }[blob.type] || 'img';
+  const fd = new FormData(); fd.append('imagem', blob, 'imagem.' + ext);
+  let r = await api('enviar-imagem', { body: fd });
+  if (r.status === 401 && await ensureLogin(true)) r = await api('enviar-imagem', { body: fd });
+  return r.ok ? r.data.url : null;
+}
+
+async function publish() {
+  if (!hasSite()) return;
+  if (!S.server.available) return download();
+  const list = dirtyPages();
+  if (!list.length) { toast('Não há alterações para salvar.'); return; }
+  if (!await ensureLogin()) return;
+  busy(true, 'Salvando no site…');
+  const failed = [];
+  for (const p of list) {
+    const html = serialize(p);
+    const send = () => api('salvar&pagina=' + encodeURIComponent(p.file), { body: html, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+    let r = await send();
+    if (r.status === 401) { busy(false); if (await ensureLogin(true)) { busy(true, 'Salvando no site…'); r = await send(); } }
+    if (!r.ok) failed.push({ p, erro: r.data.erro });
+  }
+  busy(false);
+  if (failed.length) {
+    toast(`Não foi possível salvar ${listNames(failed.map(x => x.p.file))}: ${failed[0].erro || 'tente de novo.'}`, 'err', 8000);
+    return;
+  }
+  markSaved('publish');
+  toast('Alterações salvas! As mudanças já estão no ar.', 'ok', 5000);
+}
+
+/* =========================================================
+   INTERFACE GERAL
+   ========================================================= */
+let toastT;
+function toast(msg, kind = '', ms = 3500) {
+  const t = $('#toast'); t.textContent = msg; t.className = 'toast is-on' + (kind ? ' toast--' + kind : '');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('is-on'), ms);
+}
+function busy(on, text) { $('#busy').hidden = !on; if (text) $('#busy-text').textContent = text; }
+function notice(html, kind = '', actions = []) {
+  const n = document.createElement('div');
+  n.className = 'notice' + (kind ? ' notice--' + kind : '');
+  n.innerHTML = `<div class="notice__body">${html}<div class="notice__actions"></div></div><button class="notice__close" type="button" aria-label="Fechar aviso">×</button>`;
+  actions.forEach(a => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'btn btn--sm btn--ghost'; b.textContent = a.label;
+    b.addEventListener('click', () => { a.fn(); n.remove(); }); $('.notice__actions', n).append(b);
+  });
+  if (!actions.length) $('.notice__actions', n).remove();
+  $('.notice__close', n).addEventListener('click', () => n.remove());
+  $('#notices').append(n);
+}
+function showStart(err) {
+  $('#start').hidden = false;
+  const e = $('#start-err'); e.hidden = !err; if (err) e.textContent = err;
+}
+function hideStart() { $('#start').hidden = true; }
+function setView(v) {
+  document.body.dataset.view = v;
+  $$('.tabs [data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === v)));
+  if (v === 'preview') requestAnimationFrame(layoutPreview);
+}
+function filterFields(q) {
+  q = fold(q.trim());
+  $$('.grp').forEach(g => {
+    let any = false;
+    $$('.field', g).forEach(w => {
+      const f = S.byKey.get(w.dataset.key);
+      const val = f.kind === 'img' ? f.value.alt : (String(f.value).startsWith('data:') ? '' : f.value);
+      const ok = !q || fold(`${f.label} ${f.group} ${val}`).includes(q);
+      w.hidden = !ok; any = any || ok;
+    });
+    $$('.item', g).forEach(it => { it.hidden = !$$('.field', it).some(w => !w.hidden); });
+    $$('.add-item', g).forEach(b => { b.hidden = !!q; });
+    g.hidden = !any; if (q && any) g.open = true;
+  });
+}
+
+function noticeMissing() {
+  const missing = S.pages.filter(p => !p.doc);
+  if (!missing.length) return;
+  const names = listNames(missing.map(p => `<strong>${esc(p.file)}</strong>`));
+  notice(`Não encontramos ${names} na pasta do site. Coloque ${missing.length > 1 ? 'esses arquivos' : 'esse arquivo'} junto com o index.html e o admin.html, ou clique em <strong>Abrir arquivo</strong>.`, 'warn',
+    [{ label: 'Abrir arquivo', fn: () => $('#file-site').click() }]);
+}
+
+/* Abrir arquivo: usa os arquivos escolhidos como as páginas do site */
+async function openFiles(list) {
+  const files = [...(list || [])].filter(f => /\.html?$/i.test(f.name) || f.type === 'text/html');
+  if (!files.length) { hasSite() ? toast('Escolha os arquivos .html do site.', 'err') : showStart('Escolha os arquivos .html do site.'); return; }
+  const items = [];
+  for (const file of files) {
+    const html = await file.text(), doc = parseSite(html);
+    if (!doc) continue;
+    const byName = file.name.toLowerCase().replace(/\s*\(\d+\)(?=\.html?$)/, '');
+    const target = metaPage(doc) || (pageOf(byName) ? byName : 'index.html');
+    const p = pageOf(target); if (!p) continue;
+    items.push({ p, html, doc, old: !doc.querySelector('meta[name="cms-version"]') });
+  }
+  if (!items.length) {
+    const msg = 'Esses arquivos não têm campos editáveis. Use os arquivos que vieram junto com o painel.';
+    hasSite() ? toast(msg, 'err', 6000) : showStart(msg);
+    return;
+  }
+  if (hasSite() && items.some(i => i.old) &&
+      confirm('Esse arquivo é de uma versão anterior do site. Quer só copiar os textos e as imagens dele para a versão atual? (recomendado)\n\nOK = copiar o conteúdo · Cancelar = abrir o arquivo antigo do jeito que está')) {
+    return importFiles(files);
+  }
+  if (hasSite() && changedCount() && !confirm('Abrir arquivos descarta as alterações que ainda não foram publicadas. Continuar?')) return;
+  S.pages.forEach(p => { p.force = false; if (p.orig) p.doc = parseSite(p.orig); });
+  items.forEach(({ p, html, doc }) => { p.orig = html; p.doc = doc; p.fromMemory = 0; remember(p.file, html); });
+  try { await DB.del('draft'); } catch (e) {}
+  $('#notices').innerHTML = '';
+  S.page = items[0].p.file;
+  build();
+  noticeMissing();
+  toast(`${listNames(items.map(i => i.p.file))} ${items.length > 1 ? 'abertos' : 'aberto'} para edição.`);
+}
+
+/* Importar: copia textos e imagens de arquivos antigos para as páginas atuais */
+async function importFiles(list) {
+  if (!hasSite()) return openFiles(list);
+  const files = [...(list || [])].filter(f => /\.html?$/i.test(f.name) || f.type === 'text/html');
+  let n = 0, bad = 0;
+  for (const file of files) { const r = importHtml(await file.text()); if (r < 0) bad++; else n += r; }
+  if (n > 0) toast(`${n} ${n === 1 ? 'campo atualizado' : 'campos atualizados'} com o conteúdo de ${listNames(files.map(f => f.name))}. Confira e publique.`, 'ok', 7000);
+  else if (bad === files.length) toast('Esse arquivo não tem campos editáveis.', 'err', 5000);
+  else toast('Nada para copiar: o conteúdo já é igual ao atual.');
+}
+
+function bindUi() {
+  $('#file-site').addEventListener('change', e => { openFiles(e.target.files); e.target.value = ''; });
+  $('#file-start').addEventListener('change', e => { openFiles(e.target.files); e.target.value = ''; });
+  $('#file-import').addEventListener('change', e => { importFiles(e.target.files); e.target.value = ''; });
+  const drop = $('#drop');
+  ['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('is-drag'); }));
+  ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('is-drag'); }));
+  drop.addEventListener('drop', e => { e.stopPropagation(); openFiles(e.dataTransfer.files); });
+  window.addEventListener('dragover', e => e.preventDefault());
+  window.addEventListener('drop', e => {
+    e.preventDefault();
+    const fs = [...e.dataTransfer.files].filter(f => /\.html?$/i.test(f.name));
+    if (fs.length) openFiles(fs);
+  });
+
+  $('#btn-download').addEventListener('click', download);
+  $('#btn-download').addEventListener('mouseenter', () => { if (hasSite()) $('#btn-download').title = `Tamanho de ${S.page}: ${kb(new Blob([serialize()]).size)}`; });
+  $('#btn-save').addEventListener('click', save);
+  $('#btn-logout').addEventListener('click', logout);
+  $('#btn-discard').addEventListener('click', discardAll);
+  $('#btn-collapse').addEventListener('click', () => $$('.grp').forEach(g => g.open = false));
+  $('#search').addEventListener('input', e => filterFields(e.target.value));
+  $$('.seg [data-device]').forEach(b => b.addEventListener('click', () => {
+    S.device = b.dataset.device;
+    $$('.seg [data-device]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    layoutPreview();
+  }));
+  $('#pick').addEventListener('change', e => { S.pick = e.target.checked; try { frame().contentWindow.__setPick(S.pick); } catch (er) {} });
+  $$('.tabs [data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+  $('#btn-help').addEventListener('click', () => $('#help').showModal());
+  $('#help-close').addEventListener('click', () => $('#help').close());
+  new ResizeObserver(layoutPreview).observe($('#stage'));
+  window.addEventListener('message', e => {
+    if (e.source !== frame().contentWindow || !e.data) return;
+    if (e.data.cmsPick) focusField(e.data.cmsPick);
+    else if (e.data.cmsNav) {
+      const [file, hash] = String(e.data.cmsNav).split('#');
+      if (pageOf(file)) {
+        if (pageOf(file).doc) switchPage(file, hash ? '#' + hash : '');
+        else toast(`${file} não foi encontrado na pasta do site.`, 'err');
+      }
+    }
+  });
+  window.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); if (!$('#btn-save').disabled) save(); else toast('Não há alterações para salvar.'); }
+  });
+  window.addEventListener('beforeunload', e => { if (hasSite() && changedCount() && !S.draftOk) { e.preventDefault(); e.returnValue = ''; } });
+}
+
+/* =========================================================
+   SENHA DE ACESSO
+   ========================================================= */
+const authMode = () => (S.server.available && !S.server.defaultPass) ? 'server' : 'local';
+function isAuthorized() {
+  if (authMode() === 'server') return S.server.logged;
+  try { return sessionStorage.getItem('painel-acesso') === SENHA_HASH; } catch (e) { return false; }
+}
+function gate() {
+  return new Promise(resolve => {
+    const g = $('#gate'), form = $('#gate-form'), inp = $('#gate-pass'), err = $('#gate-err'), btn = $('#gate-btn');
+    g.hidden = false; setTimeout(() => inp.focus(), 50);
+    $('#gate-eye').onclick = () => {
+      const show = inp.type === 'password'; inp.type = show ? 'text' : 'password';
+      $('#gate-eye').setAttribute('aria-pressed', String(show));
+      $('#gate-eye').setAttribute('aria-label', show ? 'Esconder senha' : 'Mostrar senha');
+    };
+    const fail = (msg) => {
+      err.textContent = msg; inp.select();
+      g.classList.remove('is-shake'); void g.offsetWidth; g.classList.add('is-shake');
+    };
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const pass = inp.value; if (!pass) return;
+      btn.disabled = true; btn.textContent = 'Verificando…'; err.textContent = '';
+      let ok = false;
+      if (authMode() === 'server') {
+        const r = await api('login', { body: JSON.stringify({ senha: pass }), headers: { 'Content-Type': 'application/json' } });
+        ok = r.ok; if (ok) S.server.logged = true; else fail(r.data.erro || 'Não foi possível entrar.');
+      } else {
+        ok = (await sha256Hex(pass)) === SENHA_HASH;
+        if (ok) { try { sessionStorage.setItem('painel-acesso', SENHA_HASH); } catch (er) {} }
+        else { await wait(700); fail('Senha incorreta.'); }
+      }
+      btn.disabled = false; btn.textContent = 'Entrar';
+      if (ok) { inp.value = ''; g.hidden = true; resolve(); }
+    };
+  });
+}
+async function logout() {
+  if (hasSite() && changedCount() && !confirm('Suas alterações não publicadas continuam guardadas como rascunho neste navegador. Sair mesmo assim?')) return;
+  if (authMode() === 'server') await api('sair');
+  try { sessionStorage.removeItem('painel-acesso'); } catch (e) {}
+  location.reload();
+}
+function helpPass() {
+  const box = $('#help-pass');
+  if (authMode() === 'server') {
+    box.innerHTML = '<ul><li>A senha fica no arquivo <strong>save.php</strong>, na linha <code>const SENHA = \'…\';</code>. Troque o valor entre aspas e envie o arquivo de novo para a hospedagem.</li></ul>';
+    return;
+  }
+  if (ghMode() && S.gh.token) {
+    box.innerHTML = `<ul><li>Digite a nova senha e clique em <strong>Trocar a senha</strong>. O painel grava a nova senha no GitHub e ela passa a valer em 1 a 2 minutos.</li>
+      <li>No GitHub, quem consegue salvar é só quem tem a chave de acesso. A senha protege a entrada do painel.</li></ul>
+      <div style="display:grid;gap:8px">
+        <input class="inp" type="password" id="new-pass" placeholder="Nova senha" autocomplete="new-password">
+        <button class="btn btn--sm btn--outline" type="button" id="gh-pass" style="justify-self:start">Trocar a senha</button>
+      </div>`;
+    $('#gh-pass').addEventListener('click', async () => {
+      const v = $('#new-pass').value;
+      if (v.length < 6) { toast('Use uma senha com pelo menos 6 caracteres.', 'err'); return; }
+      if (!confirm('Trocar a senha do painel? Anote a nova senha antes.')) return;
+      if (await ghSetPassword(await sha256Hex(v))) $('#new-pass').value = '';
+    });
+    return;
+  }
+  box.innerHTML = `<ul><li>Digite a nova senha abaixo e clique em gerar. Depois abra o <strong>admin.html</strong> num editor de texto e troque o código da linha <code>SENHA_HASH</code> pelo código gerado.</li></ul>
+    <div style="display:grid;gap:8px">
+      <input class="inp" type="password" id="new-pass" placeholder="Nova senha" autocomplete="new-password">
+      <button class="btn btn--sm btn--outline" type="button" id="gen-hash" style="justify-self:start">Gerar código de nova senha</button>
+      <input class="inp hash-out" id="hash-out" readonly placeholder="O código aparece aqui" aria-label="Código da nova senha">
+    </div>`;
+  $('#gen-hash').addEventListener('click', async () => {
+    const v = $('#new-pass').value;
+    if (v.length < 4) { toast('Use uma senha com pelo menos 4 caracteres.', 'err'); return; }
+    const out = $('#hash-out'); out.value = await sha256Hex(v); out.select();
+  });
+}
+
+function helpSave() {
+  const ul = $('#help-save');
+  const pages = listNames(PAGES.map(p => `<strong>${p.file}</strong>`));
+  if (S.server.available) {
+    ul.innerHTML = `<li><strong>Salvar alterações</strong> grava as mudanças direto na hospedagem, em todas as páginas alteradas, com cópia da versão anterior na pasta backups.</li><li><strong>Baixar cópia</strong> guarda no seu computador a página que está aberta.</li><li>Atalho: Ctrl + S salva.</li>`;
+    return;
+  }
+  if (ghMode()) {
+    ul.innerHTML = `<li><strong>Salvar alterações</strong> grava as páginas alteradas direto no GitHub, no repositório <strong>${esc(S.gh.repo)}</strong>. O site publicado se atualiza sozinho em 1 a 2 minutos.</li>
+      <li>Fotos enviadas do computador vão para a pasta <strong>img/uploads</strong> do repositório.</li>
+      <li>Cada salvamento fica no histórico do GitHub (aba <strong>Commits</strong> do repositório), onde dá para ver e recuperar versões antigas.</li>
+      <li>Na primeira vez em cada computador, o painel pede uma <strong>chave de acesso</strong> do GitHub. Ela fica guardada só neste navegador.</li>
+      <li>Atalho: Ctrl + S salva.</li>
+      <li class="folder-line">${S.gh.token ? `Conectado ao GitHub: <strong>${esc(S.gh.repo)}</strong> <button class="btn btn--sm btn--outline" type="button" id="gh-off">Desconectar deste navegador</button>` : `GitHub ainda não conectado neste navegador. <button class="btn btn--sm btn--outline" type="button" id="gh-on">Conectar ao GitHub</button>`}</li>`;
+    $('#gh-off')?.addEventListener('click', () => {
+      if (!confirm('Desconectar o GitHub deste navegador? Para salvar de novo, será preciso colar uma chave de acesso.')) return;
+      ghForget(); helpSave(); helpPass(); updateStatus(); toast('GitHub desconectado deste navegador.');
+    });
+    $('#gh-on')?.addEventListener('click', () => { $('#help').close(); ghConnect(); });
+    return;
+  }
+  if (FS_OK && !S.fsBlocked) {
+    ul.innerHTML = `<li><strong>Salvar alterações</strong> grava as páginas alteradas direto na pasta do site, no seu computador. No primeiro salvamento depois de abrir o painel, confirme a pasta onde estão o index.html e o admin.html e permita a edição.</li>
+      <li>Antes de salvar, o painel guarda a versão anterior de cada página na pasta <strong>backups</strong> (as 10 mais recentes).</li>
+      <li>Com a pasta escolhida, as fotos enviadas do computador ficam em <strong>img/uploads</strong>.</li>
+      <li>Depois, envie os arquivos da pasta para a hospedagem. Se a hospedagem tiver PHP, envie também o <strong>save.php</strong> para salvar direto no site.</li>
+      <li>Atalho: Ctrl + S salva.</li>
+      <li class="folder-line">${S.dir ? `Pasta escolhida: <strong>${esc(S.dirName || 'pasta do site')}</strong>` : 'Nenhuma pasta escolhida ainda.'} <button class="btn btn--sm btn--outline" type="button" id="pick-folder">${S.dir ? 'Escolher outra pasta' : 'Escolher a pasta'}</button></li>`;
+    $('#pick-folder').addEventListener('click', async () => { const d = await connectFolder(); if (d && d !== 'blocked') toast(`Pronto: o painel vai salvar ${folderTxt()}.`, 'ok'); });
+    return;
+  }
+  ul.innerHTML = `<li>Este navegador não deixa o painel gravar na pasta do computador. <strong>Salvar alterações</strong> baixa as páginas que você alterou (${pages}): substitua os arquivos antigos da pasta do site por elas e envie para a hospedagem.</li><li>Para salvar direto na pasta, use o Chrome ou o Edge.</li><li>Se a hospedagem tiver PHP, envie também o <strong>save.php</strong> (com a sua senha) para salvar direto no site.</li><li>Atalho: Ctrl + S salva.</li>`;
+}
+function labelDownload() {
+  const b = $('#btn-download');
+  $('.lbl-long', b).textContent = S.server.available ? 'Baixar cópia' : 'Baixar arquivos';
+  $('.lbl-short', b).textContent = S.server.available ? 'Cópia' : 'Baixar';
+}
+
+/* =========================================================
+   INÍCIO
+   ========================================================= */
+(async function boot() {
+  bindUi(); bindGithub();
+  await detectServer();
+  ghInit();
+  if (!isAuthorized()) await gate();
+  document.body.classList.remove('locked');
+  await ghCheck();
+  helpPass(); helpSave(); labelDownload();
+  $('#btn-view-site').hidden = location.protocol === 'file:';
+  if (S.server.leak) notice('<strong>Atenção:</strong> esta hospedagem mostra o <strong>save.php</strong> como texto (ela não executa PHP), então a senha fica visível. Apague o save.php do servidor e use “Baixar arquivos”.', 'err');
+  else if (S.server.defaultPass) notice('Para publicar direto pelo painel, troque a senha padrão no arquivo <strong>save.php</strong>.', 'warn');
+
+  busy(true, 'Abrindo o site…');
+  let draft = null;
+  try { draft = await DB.get('draft'); } catch (e) { S.draftOk = false; }
+
+  /* 1) Rascunho com alterações ainda não publicadas */
+  if (draft && draft.v === 2 && draft.pages) {
+    S.pages.forEach(p => {
+      const h = draft.pages[p.file];
+      if (!h) return;
+      p.doc = parseSite(h); p.orig = (draft.orig && draft.orig[p.file]) || h;
+      p.force = (draft.force || []).includes(p.file);
+    });
+    if (hasSite()) {
+      const missing = S.pages.filter(p => !p.doc);
+      const got = await Promise.all(missing.map(p => fetchPage(p.file)));
+      missing.forEach((p, i) => { p.orig = got[i]; p.doc = parseSite(got[i]); });
+      S.page = draft.page || PAGES[0].file;
+      busy(false);
+      build(draft.baseline);
+      notice(`Rascunho de <strong>${fmtDate(draft.savedAt)}</strong> restaurado, com alterações que ainda não foram publicadas.`, '', [{ label: 'Descartar rascunho', fn: discardAll }]);
+      noticeMissing();
+      return;
+    }
+  }
+
+  /* 2) Páginas atuais do site (da hospedagem ou da pasta do computador) */
+  const newer = await loadFresh();
+  busy(false);
+  if (!hasSite()) { showStart(); return; }
+  build();
+
+  if (draft && draft.html && !draft.v) {
+    const n = importHtml(draft.html);
+    if (n > 0) notice(`Recuperamos ${n} ${n === 1 ? 'alteração' : 'alterações'} do rascunho anterior e aplicamos na versão atual do site.`, '', [{ label: 'Descartar', fn: discardAll }]);
+    else DB.del('draft').catch(() => {});
+  }
+  const mem = S.pages.filter(p => p.fromMemory);
+  if (mem.length) notice(`Abrimos a última versão de ${listNames(mem.map(p => `<strong>${p.file}</strong>`))} usada neste navegador, porque não conseguimos ler o arquivo da pasta.`);
+  if (newer.length) {
+    notice(`A versão salva neste navegador em <strong>${fmtDate(Math.max(...newer.map(x => x.last.at)))}</strong> é diferente dos arquivos da pasta do site. Se você baixou alterações e ainda não substituiu os arquivos, use a versão salva.`, 'warn',
+      [{ label: 'Usar a versão salva', fn: () => { newer.forEach(({ p, last }) => { p.orig = last.html; p.doc = parseSite(last.html); p.force = false; }); build(); toast('Versão salva aberta.'); } }]);
+  }
+  noticeMissing();
+})();
+</script>
+</body>
+</html>
