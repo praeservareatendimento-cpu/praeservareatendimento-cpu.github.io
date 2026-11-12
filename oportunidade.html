@@ -545,20 +545,29 @@ fieldset.field legend{padding:0;margin-bottom:8px}
 
 /* Certificações (início do rodapé) */
 .certs{padding:16px 0 44px;margin-bottom:40px;border-bottom:1px solid var(--line)}
-.certs__head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 28px;margin-bottom:26px}
+.certs__head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 28px;margin-bottom:8px}
 .certs__head h2{font-size:clamp(1.45rem,2.4vw,1.85rem);letter-spacing:-.02em;margin-top:12px}
 .certs__head p{margin-top:8px;color:var(--text-2);font-size:.94rem;max-width:62ch}
-.certs__grid{display:grid;grid-template-columns:1fr;gap:14px}
-@media (min-width:600px){.certs__grid{grid-template-columns:1fr 1fr}}
-@media (min-width:1024px){.certs__grid{grid-template-columns:repeat(3,1fr)}}
-.cert{display:flex;gap:14px;align-items:flex-start;padding:18px;border-radius:14px;background:rgba(13,38,61,.55);border:1px solid var(--line);transition:border-color .3s,box-shadow .3s}
-.cert:hover{border-color:rgba(60,207,242,.35);box-shadow:0 0 22px -12px rgba(60,207,242,.45)}
-.cert .icon-circle{width:46px;height:46px}
-.cert .icon-circle .ic{width:22px;height:22px}
-.cert__name{display:block;font-family:var(--font-display);font-weight:800;font-size:1.04rem;line-height:1.2}
-.cert__area{display:block;margin-top:4px;font-family:var(--font-display);font-size:.66rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan)}
-.cert p{margin-top:8px;color:var(--text-2);font-size:.88rem;line-height:1.5}
-.certs__note{margin-top:18px;color:var(--text-2);font-size:.8rem}
+.certs__sub{display:flex;align-items:center;gap:14px;margin:30px 0 16px;font-family:var(--font-display);font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan)}
+.certs__sub::after{content:"";flex:1;height:1px;background:var(--line)}
+.seals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (min-width:600px){.seals{gap:14px}}
+.awards{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.awards .seal{width:calc(50% - 5px)}
+@media (min-width:600px){.awards{gap:14px}.awards .seal{width:calc(33.333% - 10px)}}
+@media (min-width:1024px){.awards .seal{width:calc(20% - 11.2px)}}
+.seal{display:flex;flex-direction:column;align-items:center;text-align:center;padding:12px 10px 14px;border-radius:14px;background:rgba(13,38,61,.55);border:1px solid var(--line);transition:border-color .3s,box-shadow .3s,transform .3s}
+.seal:hover{border-color:rgba(60,207,242,.35);box-shadow:0 0 22px -12px rgba(60,207,242,.45);transform:translateY(-2px)}
+.seal__plate{display:block;box-sizing:border-box;width:100%;height:96px;padding:10px;border-radius:10px;background:#fff;box-shadow:inset 0 0 0 1px rgba(6,22,38,.06);overflow:hidden}
+.seals .seal__plate{height:108px}
+@media (min-width:600px){.seals .seal__plate{height:140px;padding:14px}.awards .seal__plate{height:110px}}
+.seal__plate img{display:block;width:100%;height:100%;object-fit:contain}
+.seal__name{display:block;margin-top:12px;font-family:var(--font-display);font-weight:800;font-size:.86rem;line-height:1.25}
+@media (min-width:600px){.seal__name{font-size:.95rem}}
+.seal__area{display:block;margin-top:5px;font-family:var(--font-display);font-size:.6rem;font-weight:700;letter-spacing:.14em;line-height:1.4;text-transform:uppercase;color:var(--cyan)}
+.seal__by{display:block;margin-top:4px;color:var(--text-2);font-size:.76rem;line-height:1.35}
+.seal__area:empty,.seal__by:empty{display:none}
+.certs__note{margin-top:22px;color:var(--text-2);font-size:.8rem}
 
 /* Botão flutuante do WhatsApp */
 .wa-float{position:fixed;right:max(18px, env(safe-area-inset-right));bottom:max(18px, env(safe-area-inset-bottom));z-index:60;
@@ -1179,17 +1188,27 @@ fieldset.field legend{padding:0;margin-bottom:8px}
         <div>
           <span class="label" data-cms="cert.rotulo" data-cms-label="Rótulo">Qualidade comprovada</span>
           <h2 id="certs-title" data-cms="cert.titulo" data-cms-label="Título">Certificações da Nipponflex</h2>
-          <p data-cms="cert.texto" data-cms-type="multiline" data-cms-label="Texto">Certificações e autorizações informadas pela fabricante em seu site oficial.</p>
+          <p data-cms="cert.texto" data-cms-type="multiline" data-cms-label="Texto">Selos, certificações e prêmios de qualidade apresentados pela fabricante em seu site oficial.</p>
         </div>
         <a class="link-arrow" href="https://www.nipponflex.com/certificacoes-e-acreditacoes" target="_blank" rel="noopener" data-cms-attr="href" data-cms-key="cert.linkUrl" data-cms-type="url" data-cms-label="Link do site oficial"><span data-cms="cert.link" data-cms-label="Texto do link">Ver no site oficial</span> <svg class="ic"><use href="#i-external"/></svg></a>
       </div>
-      <ul class="certs__grid">
-        <li class="cert reveal"><span class="icon-circle"><svg class="ic"><use href="#i-award"/></svg></span><div><strong class="cert__name" data-cms="cert1.nome" data-cms-label="Certificação 1 · Nome">ISO 9001</strong><span class="cert__area" data-cms="cert1.area" data-cms-label="Certificação 1 · Área">Gestão da qualidade</span><p data-cms="cert1.texto" data-cms-type="multiline" data-cms-label="Certificação 1 · Descrição">Certificada desde 2004, com renovação anual, para a qualidade de produtos e processos.</p></div></li>
-        <li class="cert reveal" style="--d:60ms"><span class="icon-circle icon-circle--coral"><svg class="ic"><use href="#i-leaf"/></svg></span><div><strong class="cert__name" data-cms="cert2.nome" data-cms-label="Certificação 2 · Nome">ISO 14001</strong><span class="cert__area" data-cms="cert2.area" data-cms-label="Certificação 2 · Área">Gestão ambiental</span><p data-cms="cert2.texto" data-cms-type="multiline" data-cms-label="Certificação 2 · Descrição">Certificada desde 2007 em gestão ambiental.</p></div></li>
-        <li class="cert reveal" style="--d:120ms"><span class="icon-circle"><svg class="ic"><use href="#i-shield"/></svg></span><div><strong class="cert__name" data-cms="cert3.nome" data-cms-label="Certificação 3 · Nome">Anvisa · AFE 8.06.737-1</strong><span class="cert__area" data-cms="cert3.area" data-cms-label="Certificação 3 · Área">Produtos para saúde</span><p data-cms="cert3.texto" data-cms-type="multiline" data-cms-label="Certificação 3 · Descrição">Autorização de Funcionamento de Empresa para produtos para saúde (correlatos).</p></div></li>
-        <li class="cert reveal" style="--d:180ms"><span class="icon-circle icon-circle--coral"><svg class="ic"><use href="#i-flask"/></svg></span><div><strong class="cert__name" data-cms="cert4.nome" data-cms-label="Certificação 4 · Nome">Anvisa · AFE 4.00.007-9</strong><span class="cert__area" data-cms="cert4.area" data-cms-label="Certificação 4 · Área">Cosméticos</span><p data-cms="cert4.texto" data-cms-type="multiline" data-cms-label="Certificação 4 · Descrição">Autorização de Funcionamento de Empresa para cosméticos.</p></div></li>
-        <li class="cert reveal" style="--d:240ms"><span class="icon-circle"><svg class="ic"><use href="#i-bed"/></svg></span><div><strong class="cert__name" data-cms="cert5.nome" data-cms-label="Certificação 5 · Nome">Inmetro</strong><span class="cert__area" data-cms="cert5.area" data-cms-label="Certificação 5 · Área">Colchões de espuma</span><p data-cms="cert5.texto" data-cms-type="multiline" data-cms-label="Certificação 5 · Descrição">Colchões e colchonetes de espuma certificados conforme a Portaria Inmetro nº 79/2011.</p></div></li>
-        <li class="cert reveal" style="--d:300ms"><span class="icon-circle icon-circle--coral"><svg class="ic"><use href="#i-clipcheck"/></svg></span><div><strong class="cert__name" data-cms="cert6.nome" data-cms-label="Certificação 6 · Nome">OCP SENAI</strong><span class="cert__area" data-cms="cert6.area" data-cms-label="Certificação 6 · Área">Auditoria independente</span><p data-cms="cert6.texto" data-cms-type="multiline" data-cms-label="Certificação 6 · Descrição">Organismo certificador acreditado pelo Inmetro, com auditorias anuais dos colchões de espuma.</p></div></li>
+      <h3 class="certs__sub reveal" data-cms="cert.selosTitulo" data-cms-label="Título: selos e certificações">Selos e certificações</h3>
+      <ul class="seals reveal">
+        <li class="seal"><span class="seal__plate"><img src="img/selos/iso-9001.webp" alt="ISO 9001" width="178" height="177" loading="lazy" decoding="async" data-cms-img="selo1.img" data-cms-max="480" data-cms-label="Selo 1 · Imagem"></span><strong class="seal__name" data-cms="selo1.nome" data-cms-label="Selo 1 · Nome">ISO 9001</strong><span class="seal__area" data-cms="selo1.area" data-cms-label="Selo 1 · Área">Gestão da qualidade</span></li>
+        <li class="seal"><span class="seal__plate"><img src="img/selos/anvisa.webp" alt="Anvisa" width="300" height="300" loading="lazy" decoding="async" data-cms-img="selo2.img" data-cms-max="480" data-cms-label="Selo 2 · Imagem"></span><strong class="seal__name" data-cms="selo2.nome" data-cms-label="Selo 2 · Nome">Anvisa</strong><span class="seal__area" data-cms="selo2.area" data-cms-label="Selo 2 · Área">Autorização de funcionamento</span></li>
+        <li class="seal"><span class="seal__plate"><img src="img/selos/inmetro.webp" alt="INMETRO" width="320" height="320" loading="lazy" decoding="async" data-cms-img="selo3.img" data-cms-max="480" data-cms-label="Selo 3 · Imagem"></span><strong class="seal__name" data-cms="selo3.nome" data-cms-label="Selo 3 · Nome">INMETRO</strong><span class="seal__area" data-cms="selo3.area" data-cms-label="Selo 3 · Área">Avaliação da conformidade</span></li>
+      </ul>
+      <h3 class="certs__sub reveal" data-cms="cert.premiosTitulo" data-cms-label="Título: prêmios de qualidade">Prêmios de qualidade</h3>
+      <ul class="awards reveal">
+        <li class="seal"><span class="seal__plate"><img src="img/selos/the-bizz-awards-2006.webp" alt="The Bizz Awards 2006" width="122" height="121" loading="lazy" decoding="async" data-cms-img="premio1.img" data-cms-max="400" data-cms-label="Prêmio 1 · Imagem"></span><strong class="seal__name" data-cms="premio1.nome" data-cms-label="Prêmio 1 · Nome">The Bizz Awards 2006</strong><span class="seal__by" data-cms="premio1.detalhe" data-cms-label="Prêmio 1 · Detalhe (opcional)">World Confederation of Businesses</span></li>
+        <li class="seal"><span class="seal__plate"><img src="img/selos/premio-quality-brasil.webp" alt="Prêmio Quality Brasil" width="103" height="125" loading="lazy" decoding="async" data-cms-img="premio2.img" data-cms-max="400" data-cms-label="Prêmio 2 · Imagem"></span><strong class="seal__name" data-cms="premio2.nome" data-cms-label="Prêmio 2 · Nome">Prêmio Quality Brasil</strong><span class="seal__by" data-cms="premio2.detalhe" data-cms-label="Prêmio 2 · Detalhe (opcional)"></span></li>
+        <li class="seal"><span class="seal__plate"><img src="img/selos/os-melhores-do-ano.webp" alt="Os Melhores do Ano" width="120" height="118" loading="lazy" decoding="async" data-cms-img="premio3.img" data-cms-max="400" data-cms-label="Prêmio 3 · Imagem"></span><strong class="seal__name" data-cms="premio3.nome" data-cms-label="Prêmio 3 · Nome">Os Melhores do Ano</strong><span class="seal__by" data-cms="premio3.detalhe" data-cms-label="Prêmio 3 · Detalhe (opcional)"></span></li>
+        <li class="seal"><span class="seal__plate"><img src="img/selos/premio-top-de-qualidade.webp" alt="Prêmio Top de Qualidade" width="124" height="102" loading="lazy" decoding="async" data-cms-img="premio4.img" data-cms-max="400" data-cms-label="Prêmio 4 · Imagem"></span><strong class="seal__name" data-cms="premio4.nome" data-cms-label="Prêmio 4 · Nome">Prêmio Top de Qualidade</strong><span class="seal__by" data-cms="premio4.detalhe" data-cms-label="Prêmio 4 · Detalhe (opcional)">Instituto de Estudos e Pesquisa da Qualidade</span></li>
+        <li class="seal"><span class="seal__plate"><img src="img/selos/premio-master-qualidade-america-do-sul.webp" alt="Prêmio Master Qualidade América do Sul" width="97" height="124" loading="lazy" decoding="async" data-cms-img="premio5.img" data-cms-max="400" data-cms-label="Prêmio 5 · Imagem"></span><strong class="seal__name" data-cms="premio5.nome" data-cms-label="Prêmio 5 · Nome">Prêmio Master Qualidade América do Sul</strong><span class="seal__by" data-cms="premio5.detalhe" data-cms-label="Prêmio 5 · Detalhe (opcional)">ABIQUA</span></li>
+        <li class="seal"><span class="seal__plate"><img src="img/selos/premio-qualidade-america-do-sul.webp" alt="Prêmio Qualidade América do Sul" width="86" height="124" loading="lazy" decoding="async" data-cms-img="premio6.img" data-cms-max="400" data-cms-label="Prêmio 6 · Imagem"></span><strong class="seal__name" data-cms="premio6.nome" data-cms-label="Prêmio 6 · Nome">Prêmio Qualidade América do Sul</strong><span class="seal__by" data-cms="premio6.detalhe" data-cms-label="Prêmio 6 · Detalhe (opcional)">ABIQUA</span></li>
+        <li class="seal"><span class="seal__plate"><img src="img/selos/premio-quality-brasil-2005.webp" alt="Prêmio Quality Brasil 2005" width="111" height="124" loading="lazy" decoding="async" data-cms-img="premio7.img" data-cms-max="400" data-cms-label="Prêmio 7 · Imagem"></span><strong class="seal__name" data-cms="premio7.nome" data-cms-label="Prêmio 7 · Nome">Prêmio Quality Brasil 2005</strong><span class="seal__by" data-cms="premio7.detalhe" data-cms-label="Prêmio 7 · Detalhe (opcional)"></span></li>
+        <li class="seal"><span class="seal__plate"><img src="img/selos/reclame-aqui-2026.webp" alt="RECLAME AQUI" width="286" height="292" loading="lazy" decoding="async" data-cms-img="premio8.img" data-cms-max="400" data-cms-label="Prêmio 8 · Imagem"></span><strong class="seal__name" data-cms="premio8.nome" data-cms-label="Prêmio 8 · Nome">RECLAME AQUI</strong><span class="seal__by" data-cms="premio8.detalhe" data-cms-label="Prêmio 8 · Detalhe (opcional)">Prêmio Melhores Empresas para o Consumidor 2026</span></li>
+        <li class="seal"><span class="seal__plate"><img src="img/selos/abevd.webp" alt="ABEVD" width="300" height="300" loading="lazy" decoding="async" data-cms-img="premio9.img" data-cms-max="400" data-cms-label="Prêmio 9 · Imagem"></span><strong class="seal__name" data-cms="premio9.nome" data-cms-label="Prêmio 9 · Nome">ABEVD</strong><span class="seal__by" data-cms="premio9.detalhe" data-cms-label="Prêmio 9 · Detalhe (opcional)">Associação Brasileira de Empresas de Vendas Diretas</span></li>
       </ul>
       <p class="certs__note" data-cms="cert.nota" data-cms-type="multiline" data-cms-label="Observação">Certificações da fabricante Nipponflex. A Praeservare atua como consultora independente.</p>
     </div>
